@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/mp_usuarios"
+        android:title="Usuarios">
+        <menu>
+            <item
+                android:id="@+id/mp_usuario_nuevo"
+                android:title="Nuevo Usuario" />
+            <item
+                android:id="@+id/mp_usuario_consultar"
+                android:title="Consultar Usuario" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/mp_vehiculos"
+        android:title="Vehículos">
+        <menu>
+            <item
+                android:id="@+id/mp_vehiculo_nuevo"
+                android:title="Nuevo Vehículo" />
+            <item
+                android:id="@+id/mp_vehiculo_consultar"
+                android:title="Consultar Vehículo" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/mp_servicios"
+        android:title="Servicios">
+        <menu>
+            <item
+                android:id="@+id/mp_servicio_nuevo"
+                android:title="Nuevo Servicio" />
+            <item
+                android:id="@+id/mp_servicio_consultar"
+                android:title="Consultar Servicio" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/mp_facturacion"
+        android:title="Facturación">
+        <menu>
+            <item
+                android:id="@+id/mp_factura_nueva"
+                android:title="Nueva Factura" />
+            <item
+                android:id="@+id/mp_factura_consultar"
+                android:title="Consultar Factura" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/mp_acercaDe"
+        android:title="Acerca De" />
+    <item
+        android:id="@+id/mp_cerrarSesion"
+        android:title="Cerrar Sesión" />
+</menu>
