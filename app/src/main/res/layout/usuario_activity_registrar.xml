@@ -170,7 +170,7 @@
                     android:paddingTop="8dp">
 
                     <Button
-                        android:id="@+id/reg_btn_registrar"
+                        android:id="@+id/reg_btn_registrarserv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:backgroundTint="@color/btnRegistrar"
@@ -183,7 +183,7 @@
                         android:orientation="horizontal">
 
                         <Button
-                            android:id="@+id/reg_btn_borrar"
+                            android:id="@+id/reg_btn_borrarserv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="5dp"
@@ -194,7 +194,7 @@
                             android:text="Borrar" />
 
                         <Button
-                            android:id="@+id/reg_btn_cancelar"
+                            android:id="@+id/reg_btn_cancelarserv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
