@@ -46,6 +46,14 @@ public class ConexionBD extends SQLiteOpenHelper {
                     "id_vehiculo INTEGER," +
                     "id_empleado INTEGER" +
                     ")";
+    // Tabla TipoServicio (Catálogo de servicios)
+    private static final String tableTipoServicioCreate =
+            "CREATE TABLE tipo_servicio (" +
+                    "id_tipo_servicio INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "nombre TEXT NOT NULL," +
+                    "descripcion TEXT," +
+                    "precio REAL NOT NULL" +
+                    ")";
 
     // Tabla Factura
     private static final String tableFacturaCreate =
