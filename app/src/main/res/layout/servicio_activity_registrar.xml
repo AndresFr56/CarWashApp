@@ -6,109 +6,126 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.servicio.RegistrarServicio">
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="729dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_width="350sp"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:paddingTop="25sp"
-            android:paddingBottom="25sp">
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="350sp"
-                android:layout_height="wrap_content"
-                android:paddingBottom="5sp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/reg_txt_vehiserv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Vehiculo" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="350sp"
-                android:layout_height="wrap_content">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/reg_text_empleserv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="empleado" />
-            </com.google.android.material.textfield.TextInputLayout>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_width="350sp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingTop="25sp"
+                android:paddingBottom="25sp">
 
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="match_parent"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="350sp"
                     android:layout_height="wrap_content"
-                    android:text="Tipo de Lavado" />
+                    android:paddingBottom="5sp">
 
-                <Spinner
-                    android:id="@+id/rg_sp_tipo_lavado"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/reg_txt_vehiserv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Vehiculo" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="350sp"
                     android:layout_height="wrap_content">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/reg_txt_precioserv"
-                        android:layout_width="100dp"
+                        android:id="@+id/reg_text_empleserv"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Precio" />
+                        android:hint="empleado" />
                 </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Tipo de Lavado" />
+
+                    <Spinner
+                        android:id="@+id/rg_sp_tipo_lavado"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp" />
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="111dp"
+                        android:layout_width="350sp"
                         android:layout_height="wrap_content">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/txt_fechacalensrv"
-                            android:layout_width="111dp"
+                            android:id="@+id/reg_txt_precioserv"
+                            android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:hint="Fecha" />
+                            android:hint="Precio" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="111dp"
+                            android:layout_height="wrap_content">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/txt_fechacalensrv"
+                                android:layout_width="111dp"
+                                android:layout_height="wrap_content"
+                                android:hint="Fecha" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <Button
+                            android:id="@+id/btn_calen"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:hint="Calendario"
+                            android:text="Calendario"
+                            app:icon="@android:drawable/ic_menu_my_calendar"
+                            app:iconGravity="textStart"
+                            app:iconSize="40dp" />
+                    </LinearLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/reg_txt_horaserv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Hora" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <Button
-                        android:id="@+id/btn_calen"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:hint="Calendario"
-                        android:text="Calendario"
-                        app:icon="@android:drawable/ic_menu_my_calendar"
-                        app:iconGravity="textStart"
-                        app:iconSize="40dp" />
                 </LinearLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -116,71 +133,69 @@
                     android:layout_height="wrap_content">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/reg_txt_horaserv"
+                        android:id="@+id/reg_text_indicaserv"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Hora" />
+                        android:layout_height="100sp"
+                        android:gravity="top"
+                        android:hint="Indicaciones" />
+
                 </com.google.android.material.textfield.TextInputLayout>
 
-            </LinearLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/reg_text_descripserv"
+                <TextView
+                    android:id="@+id/textview_descripcion"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Descripcion " />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingTop="8dp">
-
-                <Button
-                    android:id="@+id/reg_btn_registrarserv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/btnRegistrar"
-                    android:onClick="guardarUsuario"
-                    android:text="Registrar" />
+                    android:layout_height="123dp"
+                    android:layout_weight="1"
+                    android:background="@android:drawable/editbox_background"
+                    android:text="Descripcion" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="8dp">
 
                     <Button
-                        android:id="@+id/reg_btn_borrarserv"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/reg_btn_registrarserv"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/btnBorrar"
-                        android:onClick="limpiarFormulario"
-                        android:paddingRight="30dp"
-                        android:text="Borrar" />
+                        android:backgroundTint="@color/btnRegistrar"
+                        android:onClick="guardarUsuario"
+                        android:text="Registrar" />
 
-                    <Button
-                        android:id="@+id/reg_btn_cancelarserv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="#9EA8B1"
-                        android:onClick="cancelarRegistro"
-                        android:paddingLeft="30dp"
-                        android:text="Cancelar" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/reg_btn_borrarserv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="@color/btnBorrar"
+                            android:onClick="limpiarFormulario"
+                            android:paddingRight="30dp"
+                            android:text="Borrar" />
+
+                        <Button
+                            android:id="@+id/reg_btn_cancelarserv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="#9EA8B1"
+                            android:onClick="cancelarRegistro"
+                            android:paddingLeft="30dp"
+                            android:text="Cancelar" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
             </LinearLayout>
-
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

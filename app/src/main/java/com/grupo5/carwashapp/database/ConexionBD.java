@@ -41,7 +41,8 @@ public class ConexionBD extends SQLiteOpenHelper {
                     "tipo_lavado TEXT NOT NULL," +
                     "fecha_hora TEXT NOT NULL," +
                     "costo REAL NOT NULL," +
-                    "descripcion TEXT NOT NULL," +
+                    " indicaciones TEXT NOT NULL,"+
+                    "descripcion_servicio TEXT NOT NULL," +
                     "estado_servicio TEXT NOT NULL," +
                     "id_vehiculo INTEGER," +
                     "id_empleado INTEGER" +
@@ -84,6 +85,7 @@ public class ConexionBD extends SQLiteOpenHelper {
         db.execSQL(tableUsuarioCreate);
         db.execSQL(tableVehiculoCreate);
         db.execSQL(tableServicioCreate);
+        db.execSQL(tableTipoServicioCreate);
         db.execSQL(tableFacturaCreate);
         db.execSQL(tableDetalleFacturaCreate);
     }
