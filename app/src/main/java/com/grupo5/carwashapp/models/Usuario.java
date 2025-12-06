@@ -1,18 +1,26 @@
-package com.grupo5.carwashapp.model;
+package com.grupo5.carwashapp.models;
+
+import com.google.firebase.database.Exclude;
+import com.grupo5.carwashapp.models.enums.Estado;
+import com.grupo5.carwashapp.models.enums.Roles;
 
 public class Usuario {
+    @Exclude
+    private String uid;
     private String cedula;
     private String nombres;
     private String apellidos;
     private String telefono;
     private String correo;
     private String direccion;
-    private String rol;
-    private String estado;
-    private String contrasenia;
+    private Roles rol;
+    private Estado estado;
+
+    // Constructor vacio
+    public Usuario(){}
 
     public Usuario(String cedula, String nombres, String apellidos, String telefono,
-                   String correo, String direccion, String rol, String estado, String contrasenia) {
+                   String correo, String direccion, Roles rol, Estado estado) {
         this.cedula = cedula;
         this.nombres = nombres;
         this.apellidos = apellidos;
@@ -21,10 +29,13 @@ public class Usuario {
         this.direccion = direccion;
         this.rol = rol;
         this.estado = estado;
-        this.contrasenia = contrasenia;
     }
 
     // Getters
+    @Exclude
+    public String getUid() { return uid; }
+    @Exclude
+    public void setUid(String uid) { this.uid = uid; }
     public String getCedula() {
         return cedula;
     }
@@ -49,16 +60,12 @@ public class Usuario {
         return direccion;
     }
 
-    public String getRol() {
+    public Roles getRol() {
         return rol;
     }
 
-    public String getEstado() {
+    public Estado getEstado() {
         return estado;
-    }
-
-    public String getContrasenia() {
-        return contrasenia;
     }
 
     // Setters
@@ -86,15 +93,11 @@ public class Usuario {
         this.direccion = direccion;
     }
 
-    public void setRol(String rol) {
+    public void setRol(Roles rol) {
         this.rol = rol;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(Estado estado) {
         this.estado = estado;
-    }
-
-    public void setContrasenia(String contrasenia) {
-        this.contrasenia = contrasenia;
     }
 }

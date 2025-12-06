@@ -2,17 +2,5 @@
     <string name="app_name">CarWashApp</string>
     <string name="login_text">Iniciar Sesión</string>
     <string name="sign_in_">Crear cuenta</string>
-
-    <!-- Spinner de roles -->
-    <string-array name="roles_array">
-        <item>Administrador</item>
-        <item>Empleado</item>
-        <item>Cliente</item>
-    </string-array>
-
-    <!-- Spinner de estados -->
-    <string-array name="estados_array">
-        <item>Activo</item>
-        <item>Inactivo</item>
-    </string-array>
+    <string name="title_activity_menu_principal">MenuPrincipal</string>
 </resources>

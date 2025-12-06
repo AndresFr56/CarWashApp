@@ -74,7 +74,7 @@
             android:layout_marginTop="8sp"
             android:layout_weight="1"
             android:backgroundTint="@color/btnColor"
-            android:onClick="validarDeInicioSesion"
+            android:onClick="validarInicioSesion"
             android:text="@string/login_text" />
 
         <Button
