@@ -93,7 +93,7 @@
                     <Spinner
                         android:id="@+id/reg_sp_rol"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:backgroundTint="@color/black"
                         android:paddingTop="10dp" />
 
@@ -103,6 +103,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="20dp"
+                    android:layout_marginBottom="15dp"
                     android:orientation="vertical">
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -128,26 +129,6 @@
                             android:layout_height="wrap_content"
                             android:hint="Direccion" />
                     </com.google.android.material.textfield.TextInputLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:paddingTop="20dp">
-
-                    <TextView
-                        android:id="@+id/reg_lbl_Estado"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Estado" />
-
-                    <Spinner
-                        android:id="@+id/reg_sp_estado"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@color/black"
-                        android:paddingTop="10dp" />
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
@@ -160,7 +141,6 @@
                             android:layout_height="wrap_content"
                             android:hint="Contraseña" />
                     </com.google.android.material.textfield.TextInputLayout>
-
                 </LinearLayout>
 
                 <LinearLayout

@@ -1,8 +1,7 @@
 package com.grupo5.carwashapp.activities.usuario;
 
 import android.annotation.SuppressLint;
-import android.content.ContentValues;
-import android.database.Cursor;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
@@ -11,18 +10,31 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.grupo5.carwashapp.R;
+import com.grupo5.carwashapp.activities.Home;
+import com.grupo5.carwashapp.activities.Login;
 import com.grupo5.carwashapp.database.ConexionBD;
-import com.grupo5.carwashapp.model.Usuario;
+import com.grupo5.carwashapp.models.dtos.usuario.UsuarioUpdateDto;
+import com.grupo5.carwashapp.models.enums.Estado;
+import com.grupo5.carwashapp.models.enums.Roles;
+import com.grupo5.carwashapp.repository.UsuarioRepository;
 
 public class ConsultarUsuario extends AppCompatActivity {
+    private TextInputEditText cedulaT, nombresT, apellidosT, telefonoT, correoT, direccionT, cedulaBuscarT;
     private Spinner spRol, spEstado;
+    private UsuarioUpdateDto usuarioActual;
+    private UsuarioRepository repoUsuario;
+    private boolean modoEdicion = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,161 +46,217 @@ public class ConsultarUsuario extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        repoUsuario = new UsuarioRepository();
+        usuarioActual = new UsuarioUpdateDto();
+
+        cedulaT = findViewById(R.id.consul_txt_cedula);
+        nombresT = findViewById(R.id.consul_txt_nombre);
+        apellidosT = findViewById(R.id.consul_txt_apellido);
+        telefonoT = findViewById(R.id.consul_txt_telefono);
+        correoT = findViewById(R.id.consul_txt_correo);
+        direccionT = findViewById(R.id.consul_txt_direccion);
+        cedulaBuscarT = findViewById(R.id.consul_txt_cedulaBuscar);
+
+        // Llenamos los roles con los valores del enum
         spRol = findViewById(R.id.consul_spn_rol);
+
+        ArrayAdapter<Roles> adapterRoles = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                Roles.values()
+        );
+
+        adapterRoles.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spRol.setAdapter(adapterRoles);
+
+        // Llenamos los estados con los valores del enum
         spEstado = findViewById(R.id.consul_spn_estado);
 
-        //Llenamos los spinners usando los recursos strings.xml
-        ArrayAdapter<CharSequence> adapterRol = ArrayAdapter.createFromResource(
+        ArrayAdapter<Estado> adapterEstados = new ArrayAdapter<>(
                 this,
-                R.array.roles_array,
-                android.R.layout.simple_spinner_item
+                android.R.layout.simple_spinner_item,
+                Estado.values()
         );
-        adapterRol.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spRol.setAdapter(adapterRol);
 
-        ArrayAdapter<CharSequence> adapterEstado = ArrayAdapter.createFromResource(
-                this,
-                R.array.estados_array,
-                android.R.layout.simple_spinner_item
-        );
-        adapterEstado.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spEstado.setAdapter(adapterEstado);
+        adapterEstados.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spEstado.setAdapter(adapterEstados);
     }
 
     @SuppressLint("Range")
     public void consultarUsuario(View v) {
-        TextInputEditText txtCedulaBuscar = findViewById(R.id.consul_txt_cedulaBuscar);
+        String cedulaConsul = cedulaBuscarT.getText().toString();
+        repoUsuario.obtenerUsuarioPorCedula(cedulaConsul, new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        UsuarioUpdateDto usuario = ds.getValue(UsuarioUpdateDto.class);
+                        usuario.setUid(ds.getKey());
+                        cedulaT.setText(usuario.getCedula());
+                        nombresT.setText(usuario.getNombres());
+                        apellidosT.setText(usuario.getApellidos());
+                        telefonoT.setText(usuario.getTelefono());
+                        correoT.setText(usuario.getCorreo());
+                        direccionT.setText(usuario.getDireccion());
+                        spRol.setSelection(usuario.getRol().ordinal());
+                        spEstado.setSelection(usuario.getEstado().ordinal());
+                        usuarioActual = usuario;
+                    }
+                    bloquearCampos();
+                } else {
+                    Toast.makeText(v.getContext(), "No se encontraron coincidencias", Toast.LENGTH_LONG).show();
+                }
+            }
 
-        TextInputEditText txtCedula = findViewById(R.id.consul_txt_cedula);
-        TextInputEditText txtNombres = findViewById(R.id.consul_txt_nombre);
-        TextInputEditText txtApellidos = findViewById(R.id.consul_txt_apellido);
-        TextInputEditText txtTelefono = findViewById(R.id.consul_txt_telefono);
-        TextInputEditText txtCorreo = findViewById(R.id.consul_txt_correo);
-        TextInputEditText txtDireccion = findViewById(R.id.consul_txt_direccion);
-        TextInputEditText txtContrasenia = findViewById(R.id.consul_txt_contrasenia);
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-        Spinner spRol = findViewById(R.id.consul_spn_rol);
-        Spinner spEstado = findViewById(R.id.consul_spn_estado);
-
-        ConexionBD conexion = new ConexionBD(this);
-        SQLiteDatabase db = conexion.getReadableDatabase();
-
-        String cedulaIngresada = txtCedulaBuscar.getText().toString();
-
-        Cursor c = db.rawQuery(
-                "SELECT cedula,nombre,apellido,telefono,correo,direccion,rol,estado,contrasenia " +
-                        "FROM usuario WHERE cedula=?",
-                new String[]{cedulaIngresada}
-        );
-
-        if (c.moveToFirst()) {
-            txtCedula.setText(c.getString(c.getColumnIndex("cedula")));
-            txtNombres.setText(c.getString(c.getColumnIndex("nombre")));
-            txtApellidos.setText(c.getString(c.getColumnIndex("apellido")));
-            txtTelefono.setText(c.getString(c.getColumnIndex("telefono")));
-            txtCorreo.setText(c.getString(c.getColumnIndex("correo")));
-            txtDireccion.setText(c.getString(c.getColumnIndex("direccion")));
-
-            String rolBD = c.getString(c.getColumnIndex("rol"));
-            String estadoBD = c.getString(c.getColumnIndex("estado"));
-
-            txtContrasenia.setText(c.getString(c.getColumnIndex("contrasenia")));
-
-            spRol.setSelection(((ArrayAdapter) spRol.getAdapter()).getPosition(rolBD));
-            spEstado.setSelection(((ArrayAdapter) spEstado.getAdapter()).getPosition(estadoBD));
-        } else {
-            Toast.makeText(this, "La cédula no existe", Toast.LENGTH_LONG).show();
-        }
-        c.close();
-        db.close();
+            }
+        });
     }
 
-    public void actualizarUsuario(View v){
-        TextInputEditText txtCedulaBuscar = findViewById(R.id.consul_txt_cedulaBuscar);
-        String cedula = txtCedulaBuscar.getText().toString();
+    private boolean validarFormulario() {
+        String cedula = cedulaT.getText().toString().trim();
+        String nombre = nombresT.getText().toString().trim();
+        String apellido = apellidosT.getText().toString().trim();
+        String telefono = telefonoT.getText().toString().trim();
+        String correo = correoT.getText().toString().trim();
+        String direccion = direccionT.getText().toString().trim();
 
         if (cedula.isEmpty()) {
-            Toast.makeText(this, "Debe consultar un usuario", Toast.LENGTH_SHORT).show();
+            cedulaT.setError("La cédula es obligatoria");
+            cedulaT.requestFocus();
+            return false;
+        } else if (cedula.length() != 10) {
+            cedulaT.setError("La cédula debe tener 10 dígitos");
+            cedulaT.requestFocus();
+            return false;
+        }
+
+        if (nombre.isEmpty()) {
+            nombresT.setError("El nombre es obligatorio");
+            nombresT.requestFocus();
+            return false;
+        }
+
+        if (apellido.isEmpty()) {
+            apellidosT.setError("El apellido es obligatorio");
+            apellidosT.requestFocus();
+            return false;
+        }
+
+        if (telefono.isEmpty()) {
+            telefonoT.setError("El teléfono es obligatorio");
+            telefonoT.requestFocus();
+            return false;
+        } else if (telefono.length() != 10) {
+            telefonoT.setError("El teléfono debe tener 10 dígitos");
+            telefonoT.requestFocus();
+            return false;
+        }
+
+        if (correo.isEmpty()) {
+            correoT.setError("El correo es obligatorio");
+            correoT.requestFocus();
+            return false;
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(correo).matches()) {
+            correoT.setError("El formato del correo es inválido");
+            correoT.requestFocus();
+            return false;
+        }
+
+        if (direccion.isEmpty()) {
+            direccionT.setError("La dirección es obligatoria");
+            direccionT.requestFocus();
+            return false;
+        } else if (direccion.length() < 10) {
+            direccionT.setError("La dirección debe tener 10 o más caracteres");
+            direccionT.requestFocus();
+            return false;
+        } else if (direccion.length() > 50) {
+            direccionT.setError("La dirección debe tener menos de 50 caracteres");
+            direccionT.requestFocus();
+            return false;
+        }
+        return true;
+    }
+
+    public void actualizarUsuario(View v) {
+        if (!modoEdicion) {
+            desbloquearCampos();
+            modoEdicion = true;
             return;
         }
 
-        TextInputEditText txtCedula = findViewById(R.id.consul_txt_cedula);
-        TextInputEditText txtNombres = findViewById(R.id.consul_txt_nombre);
-        TextInputEditText txtApellidos = findViewById(R.id.consul_txt_apellido);
-        TextInputEditText txtTelefono = findViewById(R.id.consul_txt_telefono);
-        TextInputEditText txtCorreo = findViewById(R.id.consul_txt_correo);
-        TextInputEditText txtDireccion = findViewById(R.id.consul_txt_direccion);
-        TextInputEditText txtContrasenia = findViewById(R.id.consul_txt_contrasenia);
+        UsuarioUpdateDto usuarioActualizado = new UsuarioUpdateDto();
+        usuarioActualizado.setCedula(cedulaT.getText().toString());
+        usuarioActualizado.setNombres(nombresT.getText().toString());
+        usuarioActualizado.setApellidos(apellidosT.getText().toString());
+        usuarioActualizado.setTelefono(telefonoT.getText().toString());
+        usuarioActualizado.setCorreo(correoT.getText().toString());
+        usuarioActualizado.setDireccion(direccionT.getText().toString());
+        usuarioActualizado.setRol(Roles.values()[spRol.getSelectedItemPosition()]);
+        usuarioActualizado.setEstado(Estado.values()[spEstado.getSelectedItemPosition()]);
 
-        Spinner spRol = findViewById(R.id.consul_spn_rol);
-        Spinner spEstado = findViewById(R.id.consul_spn_estado);
-
-        Usuario usuario = new Usuario(
-                txtCedula.getText().toString(),
-                txtNombres.getText().toString(),
-                txtApellidos.getText().toString(),
-                txtTelefono.getText().toString(),
-                txtCorreo.getText().toString(),
-                txtDireccion.getText().toString(),
-                spRol.getSelectedItem().toString(),
-                spEstado.getSelectedItem().toString(),
-                txtContrasenia.getText().toString()
-        );
-
-        ConexionBD conexion = new ConexionBD(this);
-        SQLiteDatabase db = conexion.getWritableDatabase();
-
-        ContentValues cv = new ContentValues();
-        cv.put("cedula", usuario.getCedula());
-        cv.put("nombre", usuario.getNombres());
-        cv.put("apellido", usuario.getApellidos());
-        cv.put("telefono", usuario.getTelefono());
-        cv.put("rol", usuario.getRol());
-        cv.put("correo", usuario.getCorreo());
-        cv.put("direccion", usuario.getDireccion());
-        cv.put("estado", usuario.getEstado());
-        cv.put("contrasenia", usuario.getContrasenia());
-
-        int filasAfectadas = db.update("usuario", cv, "cedula=?", new String[]{cedula});
-        db.close();
-
-        if (filasAfectadas > 0) {
-            Toast.makeText(this, "Usuario actualizado correctamente", Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, "No se pudo realizar la actualización", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    public void eliminarUsuario(View v){
-        TextInputEditText txtCedulaBuscar = findViewById(R.id.consul_txt_cedulaBuscar);
-        String cedula = txtCedulaBuscar.getText().toString();
-
-        if (cedula.isEmpty()) {
-            Toast.makeText(this, "Debe consultar un usuario", Toast.LENGTH_SHORT).show();
+        if (!validarFormulario()) {
             return;
         }
 
-        ConexionBD conexion = new ConexionBD(this);
-        SQLiteDatabase db = conexion.getWritableDatabase();
+        repoUsuario.actualizarUsuario(usuarioActual.getUid(), usuarioActualizado, task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(v.getContext(), "Usuario actualizado correctamente", Toast.LENGTH_LONG).show();
+                bloquearCampos();
+                modoEdicion = false;
+            } else {
+                Toast.makeText(v.getContext(), "No se pudo realizar la actualización", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 
-        int filasAfectadas = db.delete("usuario","cedula=?", new String[]{cedula});
-        db.close();
+    public void eliminarUsuario(View v) {
+        repoUsuario.eliminarUsuarioFisico(usuarioActual.getUid(), task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(v.getContext(), "Usuario eliminado correctamente", Toast.LENGTH_SHORT).show();
+                limpiarCampos(v);
+            } else {
+                Toast.makeText(v.getContext(), "No se pudo realizar la eliminación", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
-        if (filasAfectadas > 0) {
-            Toast.makeText(this, "Usuario eliminado correctamente", Toast.LENGTH_LONG).show();
-            limpiarCampos(v);
-        } else {
-            Toast.makeText(this, "No se pudo realizar la eliminación", Toast.LENGTH_LONG).show();
-        }
+    private void bloquearCampos() {
+        cedulaT.setEnabled(false);
+        nombresT.setEnabled(false);
+        apellidosT.setEnabled(false);
+        telefonoT.setEnabled(false);
+        correoT.setEnabled(false);
+        direccionT.setEnabled(false);
+        spRol.setEnabled(false);
+        spEstado.setEnabled(false);
+    }
+
+    private void desbloquearCampos() {
+        cedulaT.setEnabled(true);
+        nombresT.setEnabled(true);
+        apellidosT.setEnabled(true);
+        telefonoT.setEnabled(true);
+        correoT.setEnabled(true);
+        direccionT.setEnabled(true);
+        spRol.setEnabled(true);
+        spEstado.setEnabled(true);
     }
 
     public void limpiarCampos(View v) {
-        ((TextInputEditText) findViewById(R.id.reg_txt_cedula)).setText("");
-        ((TextInputEditText) findViewById(R.id.reg_txt_nombres)).setText("");
-        ((TextInputEditText) findViewById(R.id.reg_txt_apellidos)).setText("");
-        ((TextInputEditText) findViewById(R.id.reg_txt_telefono)).setText("");
-        ((TextInputEditText) findViewById(R.id.reg_txt_correo)).setText("");
-        ((TextInputEditText) findViewById(R.id.reg_txt_direccion)).setText("");
-        ((TextInputEditText) findViewById(R.id.reg_txt_contrasenia)).setText("");
+        cedulaT.setText("");
+        nombresT.setText("");
+        apellidosT.setText("");
+        telefonoT.setText("");
+        correoT.setText("");
+        direccionT.setText("");
+    }
+
+    public void cancelar(View v) {
+        Intent ventanaHome = new Intent(v.getContext(), Home.class);
+        startActivity(ventanaHome);
     }
 }

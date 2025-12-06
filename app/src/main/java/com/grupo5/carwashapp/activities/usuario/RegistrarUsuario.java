@@ -1,8 +1,6 @@
 package com.grupo5.carwashapp.activities.usuario;
 
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -18,11 +16,14 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.textfield.TextInputEditText;
 import com.grupo5.carwashapp.R;
 import com.grupo5.carwashapp.activities.Login;
-import com.grupo5.carwashapp.database.ConexionBD;
-import com.grupo5.carwashapp.model.Usuario;
+import com.grupo5.carwashapp.models.dtos.usuario.UsuarioCreateDto;
+import com.grupo5.carwashapp.models.enums.Roles;
+import com.grupo5.carwashapp.repository.UsuarioRepository;
 
 public class RegistrarUsuario extends AppCompatActivity {
-    private Spinner spRol, spEstado;
+    private TextInputEditText cedulaT, nombresT, apellidosT, telefonoT, correoT, direccionT, contraseniaT;
+    private Spinner spRol;
+    private UsuarioRepository repoUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,29 +35,7 @@ public class RegistrarUsuario extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        spRol = findViewById(R.id.reg_sp_rol);
-        spEstado = findViewById(R.id.reg_sp_estado);
-
-        //Llenamos los spinners usando los recursos strings.xml
-        ArrayAdapter<CharSequence> adapterRol = ArrayAdapter.createFromResource(
-                this,
-                R.array.roles_array,
-                android.R.layout.simple_spinner_item
-        );
-        adapterRol.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spRol.setAdapter(adapterRol);
-
-        ArrayAdapter<CharSequence> adapterEstado = ArrayAdapter.createFromResource(
-                this,
-                R.array.estados_array,
-                android.R.layout.simple_spinner_item
-        );
-        adapterEstado.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spEstado.setAdapter(adapterEstado);
-    }
-
-    public void guardarUsuario(View v){
-        TextInputEditText cedulaT, nombresT, apellidosT, telefonoT, correoT, direccionT, contraseniaT;
+        repoUsuario = new UsuarioRepository();
 
         cedulaT = findViewById(R.id.reg_txt_cedula);
         nombresT = findViewById(R.id.reg_txt_nombres);
@@ -66,53 +45,138 @@ public class RegistrarUsuario extends AppCompatActivity {
         direccionT = findViewById(R.id.reg_txt_direccion);
         contraseniaT = findViewById(R.id.reg_txt_contrasenia);
 
-        Usuario usuario = new Usuario(
-                cedulaT.getText().toString(),
-                nombresT.getText().toString(),
-                apellidosT.getText().toString(),
-                telefonoT.getText().toString(),
-                correoT.getText().toString(),
-                direccionT.getText().toString(),
-                spRol.getSelectedItem().toString(),
-                spEstado.getSelectedItem().toString(),
-                contraseniaT.getText().toString()
+        // Llenamos los roles con los valores del enum
+        spRol = findViewById(R.id.reg_sp_rol);
+
+        ArrayAdapter<Roles> adapterRoles = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                Roles.values()
         );
-        guardarDatosDB(usuario);
+
+        adapterRoles.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spRol.setAdapter(adapterRoles);
     }
 
-    private void guardarDatosDB(Usuario usuario){
-        ConexionBD CarWashAppBD = new ConexionBD(this);
-        final SQLiteDatabase editCarWashBD = CarWashAppBD.getWritableDatabase();
-        if (editCarWashBD != null) {
-            ContentValues cv = new ContentValues();
+    private boolean validarFormulario() {
+        String cedula = cedulaT.getText().toString().trim();
+        String nombre = nombresT.getText().toString();
+        String apellido = apellidosT.getText().toString();
+        String telefono = telefonoT.getText().toString().trim();
+        String correo = correoT.getText().toString().trim();
+        String direccion = direccionT.getText().toString();
+        String contrasenia = contraseniaT.getText().toString().trim();
 
-            cv.put("cedula", usuario.getCedula());
-            cv.put("nombre", usuario.getNombres());
-            cv.put("apellido", usuario.getApellidos());
-            cv.put("telefono", usuario.getTelefono());
-            cv.put("rol", usuario.getRol());
-            cv.put("correo", usuario.getCorreo());
-            cv.put("direccion", usuario.getDireccion());
-            cv.put("estado", usuario.getEstado());
-            cv.put("contrasenia", usuario.getContrasenia());
-
-            editCarWashBD.insert( "usuario", null, cv);
-            Toast.makeText(this,"Usuario registrado correctamente",Toast.LENGTH_LONG).show();
-            editCarWashBD.close();
+        if (cedula.isEmpty()) {
+            cedulaT.setError("La cédula es obligatoria");
+            cedulaT.requestFocus();
+            return false;
+        } else if (cedula.length() != 10) {
+            cedulaT.setError("La cédula debe tener 10 dígitos");
+            cedulaT.requestFocus();
+            return false;
         }
+
+        if (nombre.isEmpty()) {
+            nombresT.setError("El nombre es obligatorio");
+            nombresT.requestFocus();
+            return false;
+        }
+
+        if (apellido.isEmpty()) {
+            apellidosT.setError("El apellido es obligatorio");
+            apellidosT.requestFocus();
+            return false;
+        }
+
+        if (telefono.isEmpty()) {
+            telefonoT.setError("El teléfono es obligatorio");
+            telefonoT.requestFocus();
+            return false;
+        } else if (telefono.length() != 10) {
+            telefonoT.setError("El teléfono debe tener 10 dígitos");
+            telefonoT.requestFocus();
+            return false;
+        }
+
+        if (correo.isEmpty()) {
+            correoT.setError("El correo es obligatorio");
+            correoT.requestFocus();
+            return false;
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(correo).matches()) {
+            correoT.setError("El formato del correo es inválido");
+            correoT.requestFocus();
+            return false;
+        }
+
+        if (direccion.isEmpty()) {
+            direccionT.setError("La dirección es obligatoria");
+            direccionT.requestFocus();
+            return false;
+        } else if (direccion.length() < 10) {
+            direccionT.setError("La dirección debe tener 10 o más caracteres");
+            direccionT.requestFocus();
+            return false;
+        } else if (direccion.length() > 50) {
+            direccionT.setError("La dirección debe tener menos de 50 caracteres");
+            direccionT.requestFocus();
+            return false;
+        }
+
+        if (contrasenia.isEmpty()) {
+            contraseniaT.setError("La contraseña es obligatoria");
+            contraseniaT.requestFocus();
+            return false;
+        } else if (contrasenia.length() < 6) {
+            contraseniaT.setError("La contraseña debe tener al menos 6 caracteres");
+            contraseniaT.requestFocus();
+            return false;
+        }
+        return true;
+    }
+
+    public void guardarUsuario(View v) {
+        if (!validarFormulario()) {
+            return;
+        }
+        String cedula = cedulaT.getText().toString().trim();
+        String nombres = nombresT.getText().toString().trim();
+        String apellidos = apellidosT.getText().toString().trim();
+        String telefono = telefonoT.getText().toString().trim();
+        String correo = correoT.getText().toString().trim();
+        String direccion = direccionT.getText().toString().trim();
+        String contrasenia = contraseniaT.getText().toString().trim();
+
+        UsuarioCreateDto usuario = new UsuarioCreateDto(
+                cedula,
+                nombres,
+                apellidos,
+                telefono,
+                correo,
+                direccion,
+                Roles.valueOf(spRol.getSelectedItem().toString())
+        );
+        repoUsuario.registrarUsuario(usuario, contrasenia, task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(this, "Usuario registrado correctamente", Toast.LENGTH_SHORT).show();
+                limpiarFormulario(v);
+            } else {
+                Toast.makeText(this, "No se pudo realizar el registro", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     public void limpiarFormulario(View v) {
-        ((TextInputEditText) findViewById(R.id.reg_txt_cedula)).setText("");
-        ((TextInputEditText) findViewById(R.id.reg_txt_nombres)).setText("");
-        ((TextInputEditText) findViewById(R.id.reg_txt_apellidos)).setText("");
-        ((TextInputEditText) findViewById(R.id.reg_txt_telefono)).setText("");
-        ((TextInputEditText) findViewById(R.id.reg_txt_correo)).setText("");
-        ((TextInputEditText) findViewById(R.id.reg_txt_direccion)).setText("");
-        ((TextInputEditText) findViewById(R.id.reg_txt_contrasenia)).setText("");
+        cedulaT.setText("");
+        nombresT.setText("");
+        apellidosT.setText("");
+        telefonoT.setText("");
+        correoT.setText("");
+        direccionT.setText("");
+        contraseniaT.setText("");
     }
 
-    public void cancelarRegistro(View v){
+    public void cancelarRegistro(View v) {
         Intent ventanaLogin = new Intent(v.getContext(), Login.class);
         startActivity(ventanaLogin);
     }
