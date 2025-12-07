@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -26,6 +28,7 @@ import com.grupo5.carwashapp.activities.vehiculo.RegistrarVehiculo;
 
 
 public class Home extends AppCompatActivity {
+    CardView cardUsuarios, cardServicios, cardVehiculos, cardFacturacion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,44 @@ public class Home extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        cardUsuarios = findViewById(R.id.home_card_usuarios);
+        cardServicios = findViewById(R.id.home_card_servicios);
+        cardVehiculos = findViewById(R.id.home_card_vehiculos);
+        cardFacturacion = findViewById(R.id.home_card_facturacion);
+
+        cardUsuarios.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Home.this, RegistrarUsuario.class);
+                startActivity(i);
+            }
+        });
+
+        cardServicios.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Home.this, RegistrarFactura.class);
+                startActivity(i);
+            }
+        });
+
+        cardVehiculos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Home.this, ConsultarUsuario.class);
+                startActivity(i);
+            }
+        });
+
+        // CLIC EN FACTURACION
+        cardFacturacion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Home.this, Login.class);
+                startActivity(i);
+            }
+        });
+
         Intent infoLogin = getIntent();
         String usuarioLogin = infoLogin.getStringExtra( "user");
 
