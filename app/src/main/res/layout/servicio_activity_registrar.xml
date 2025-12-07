@@ -38,7 +38,8 @@
                         android:id="@+id/reg_txt_vehiserv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Vehiculo" />
+                        android:hint="Vehiculo"
+                        android:inputType="number" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -49,7 +50,8 @@
                         android:id="@+id/reg_text_empleserv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="empleado" />
+                        android:hint="empleado"
+                        android:inputType="number" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <LinearLayout
@@ -90,7 +92,9 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:paddingTop="30dp"
+                        android:paddingBottom="15dp">
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="111dp"
@@ -115,16 +119,29 @@
                             app:iconSize="40dp" />
                     </LinearLayout>
 
-                    <com.google.android.material.textfield.TextInputLayout
+                    <TextView
+                        android:id="@+id/textView3"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:paddingTop="10sp"
+                        android:paddingBottom="10sp"
+                        android:text="Ingresar Hora" />
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/reg_txt_horaserv"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Hora" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                    <EditText
+                        android:id="@+id/HoraIncioTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:inputType="time" />
+
+                    <EditText
+                        android:id="@+id/HoraFinalTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:inputType="time"
+                        android:paddingTop="15dp"
+                        android:paddingBottom="15dp" />
 
                 </LinearLayout>
 

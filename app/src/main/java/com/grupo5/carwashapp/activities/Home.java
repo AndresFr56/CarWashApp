@@ -56,11 +56,11 @@ public class Home extends AppCompatActivity {
         cardServicios.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Home.this, RegistrarFactura.class);
+                // CAMBIO AQUÍ: La nueva actividad de destino
+                Intent i = new Intent(Home.this, RegistrarServicio.class);
                 startActivity(i);
             }
         });
-
         cardVehiculos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

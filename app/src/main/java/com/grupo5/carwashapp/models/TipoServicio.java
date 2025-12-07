@@ -1,4 +1,4 @@
-package com.grupo5.carwashapp.model;
+package com.grupo5.carwashapp.models;
 
 public class TipoServicio {
 
