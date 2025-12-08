@@ -55,11 +55,22 @@ public class RegistrarServicio extends AppCompatActivity {
         horaInicio = findViewById(R.id.HoraIncioTime);
         horaFin = findViewById(R.id.HoraFinalTime);
 
+// Evita escribir manualmente
+        horaInicio.setKeyListener(null);
+        horaFin.setKeyListener(null);
+
+// Abrir selector de hora
+        horaInicio.setOnClickListener(v -> mostrarTimePicker(horaInicio));
+        horaFin.setOnClickListener(v -> mostrarTimePicker(horaFin));
+
+
         spTipoLavado = findViewById(R.id.rg_sp_tipo_lavado);
         btnCalendario = findViewById(R.id.btn_calen);
         btnRegistrar = findViewById(R.id.reg_btn_registrarserv);
 
         descripcionTxt = findViewById(R.id.textview_descripcion);
+
+
 
         cargarSpinnerTipoLavado();
         configurarAutoPrecioDescripcion();
@@ -101,6 +112,25 @@ public class RegistrarServicio extends AppCompatActivity {
             dialog.show();
         });
     }
+    private void mostrarTimePicker(EditText editText) {
+        final Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+
+        android.app.TimePickerDialog timePicker = new android.app.TimePickerDialog(
+                RegistrarServicio.this,
+                (view, hourOfDay, minute1) -> {
+                    String hora = String.format("%02d:%02d", hourOfDay, minute1);
+                    editText.setText(hora);
+                },
+                hour,
+                minute,
+                true
+        );
+
+        timePicker.show();
+    }
+
     private void configurarAutoPrecioDescripcion() {
 
         spTipoLavado.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {

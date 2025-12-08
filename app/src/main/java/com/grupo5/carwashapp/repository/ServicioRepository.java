@@ -95,6 +95,7 @@ public class ServicioRepository {
                 .addOnFailureListener(e -> listener.onError(e.getMessage()));
     }
 
+
     // ---------------------------------------------------------
     // 4. Callback interface
     // ---------------------------------------------------------
