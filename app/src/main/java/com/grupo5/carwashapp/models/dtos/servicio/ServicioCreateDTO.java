@@ -7,6 +7,7 @@ import com.grupo5.carwashapp.models.enums.TipoLavado;
 public class ServicioCreateDTO {
 
     private TipoLavado tipoLavado; // Usando el enum directamente
+    private int nro_servicio;
     private String fecha;
     private String horaInicio;
     private String horaFin;
@@ -15,10 +16,8 @@ public class ServicioCreateDTO {
     private EstadoServicio estadoServicio =EstadoServicio.PENDIENTE; // Podría ser "PENDIENTE", "EN_PROCESO", "COMPLETADO", "CANCELADO"
     private int estado;
     private int idVehiculo;
-    private int idEmpleado;
-
-
-
+    private String idEmpleado;
+    private String cedula_empleado;
 
     // NOTA: El campo 'costo' no va aquí porque debe calcularse automáticamente
     // basándose en el TipoLavado seleccionado lo mismo que con descripcionServicio
@@ -28,19 +27,21 @@ public class ServicioCreateDTO {
     }
 
     // Constructor con parámetros
-    public ServicioCreateDTO(TipoLavado tipoLavado, String fecha, String horaInicio, String horaFin,
+    public ServicioCreateDTO(TipoLavado tipoLavado ,int nro_servicio, String fecha, String horaInicio, String horaFin,
                              String indicaciones/*., String descripcionServicio*/,int estado, EstadoServicio estadoServicio,
-                             int idVehiculo, int idEmpleado) {
+                             int idVehiculo, String cedula_empleado) {
         this.tipoLavado = tipoLavado;
+        this.nro_servicio=nro_servicio;
         this.fecha = fecha;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
         this.indicaciones = indicaciones;
+        this.estado =estado;
        // this.descripcionServicio = descripcionServicio;
         this.estadoServicio = estadoServicio;
-        this.estado =estado;
         this.idVehiculo = idVehiculo;
-        this.idEmpleado = idEmpleado;
+      //  this.idEmpleado = idEmpleado;
+        this.cedula_empleado=cedula_empleado;
     }
 
     // Getters y Setters
@@ -108,11 +109,11 @@ public class ServicioCreateDTO {
         this.idVehiculo = idVehiculo;
     }
 
-    public int getIdEmpleado() {
+    public String getIdEmpleado() {
         return idEmpleado;
     }
 
-    public void setIdEmpleado(int idEmpleado) {
+    public void setIdEmpleado(String idEmpleado) {
         this.idEmpleado = idEmpleado;
     }
 
@@ -122,5 +123,21 @@ public class ServicioCreateDTO {
 
     public void setEstado(int estado) {
         this.estado = estado;
+    }
+
+    public String getCedula_empleado() {
+        return cedula_empleado;
+    }
+
+    public void setCedula_empleado(String cedula_empleado) {
+        this.cedula_empleado = cedula_empleado;
+    }
+
+    public int getNro_servicio() {
+        return nro_servicio;
+    }
+
+    public void setNro_servicio(int nro_servicio) {
+        this.nro_servicio = nro_servicio;
     }
 }

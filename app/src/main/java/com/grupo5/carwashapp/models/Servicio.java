@@ -5,6 +5,7 @@ import com.grupo5.carwashapp.models.enums.EstadoServicio;
 public class Servicio {
 
     private String id_servicio;
+    private int nro_servicio;
 
     private String tipo_lavado;
     private String fecha;
@@ -19,17 +20,20 @@ public class Servicio {
     // Claves foráneas
     private int estado;
     private int id_vehiculo;
-    private int id_empleado;
+   //) private String id_empleado;
+   private String cedula_empleado;
 
-    // 2. Constructor Vacío (Requerido para muchas librerías como Firebase o JSON parsing)
+
+    // 2. Constructor Vacío (Requerido para  como Firebase )
     public Servicio() {
     }
 
-    // 3. Constructor Completo (Opcional, pero útil para crear objetos fácilmente)
-    public Servicio(String id_servicio, String tipo_lavado, String fecha, String hora_inicio, String hora_fin,
+    // 3. Constructor Completo
+    public Servicio(String id_servicio, int nro_servicio,String tipo_lavado, String fecha, String hora_inicio, String hora_fin,
                     double costo, String indicaciones, String descripcion_servicio, EstadoServicio estado_servicio,int estado,
-                    int id_vehiculo, int id_empleado) {
+                    int id_vehiculo, String cedula_empleado) {
         this.id_servicio = id_servicio;
+        this.nro_servicio=nro_servicio;
         this.tipo_lavado = tipo_lavado;
         this.fecha = fecha;
         this.hora_inicio = hora_inicio;
@@ -40,10 +44,11 @@ public class Servicio {
        // this.estado_servicio = estado_servicio;
         this.estadoServicio=estado_servicio;
         this.id_vehiculo = id_vehiculo;
-        this.id_empleado = id_empleado;
+        //this.id_empleado = id_empleado;
+        this.cedula_empleado=cedula_empleado;
     }
 
-    // 4. Getters y Setters (Métodos para acceder y modificar las variables)
+
 
     public String getId_servicio() {
         return id_servicio;
@@ -123,13 +128,13 @@ public class Servicio {
 
 
 
-    public int getId_empleado() {
+    /*public String getId_empleado() {
         return id_empleado;
     }
 
-    public void setId_empleado(int id_empleado) {
+    public void setId_empleado(String id_empleado) {
         this.id_empleado = id_empleado;
-    }
+    }*/
 
     public int getEstado() {
         return estado;
@@ -145,5 +150,21 @@ public class Servicio {
 
     public void setEstadoServicio(EstadoServicio estadoServicio) {
         this.estadoServicio = estadoServicio;
+    }
+
+    public String getCedula_empleado() {
+        return cedula_empleado;
+    }
+
+    public void setCedula_empleado(String cedula_empleado) {
+        this.cedula_empleado = cedula_empleado;
+    }
+
+    public int getNro_servicio() {
+        return nro_servicio;
+    }
+
+    public void setNro_servicio(int nro_servicio) {
+        this.nro_servicio = nro_servicio;
     }
 }

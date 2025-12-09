@@ -18,6 +18,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.grupo5.carwashapp.R;
 import com.grupo5.carwashapp.models.dtos.servicio.ServicioCreateDTO;
 import com.grupo5.carwashapp.models.enums.EstadoServicio;
@@ -27,6 +29,7 @@ import com.grupo5.carwashapp.repository.ServicioRepository;
 import java.util.Calendar;
 
 public class RegistrarServicio extends AppCompatActivity {
+
     private TextInputEditText vehiculoserv, empleadoserv, precioserv, fechacalensrv, indicacionesserv;
     private EditText horaInicio, horaFin;
     private Spinner spTipoLavado;
@@ -34,11 +37,13 @@ public class RegistrarServicio extends AppCompatActivity {
     private TextView descripcionTxt;
 
     private ServicioRepository serviciorepo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.servicio_activity_registrar);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -46,55 +51,45 @@ public class RegistrarServicio extends AppCompatActivity {
         });
 
         serviciorepo = new ServicioRepository();
+
+        // Inicializar campos
         vehiculoserv = findViewById(R.id.reg_txt_vehiserv);
-        empleadoserv = findViewById(R.id.reg_text_empleserv);
+        empleadoserv = findViewById(R.id.reg_text_cedulaempleserv);
         precioserv = findViewById(R.id.reg_txt_precioserv);
         fechacalensrv = findViewById(R.id.txt_fechacalensrv);
         indicacionesserv = findViewById(R.id.reg_text_indicaserv);
 
         horaInicio = findViewById(R.id.HoraIncioTime);
         horaFin = findViewById(R.id.HoraFinalTime);
-
-// Evita escribir manualmente
         horaInicio.setKeyListener(null);
         horaFin.setKeyListener(null);
 
-// Abrir selector de hora
         horaInicio.setOnClickListener(v -> mostrarTimePicker(horaInicio));
         horaFin.setOnClickListener(v -> mostrarTimePicker(horaFin));
-
 
         spTipoLavado = findViewById(R.id.rg_sp_tipo_lavado);
         btnCalendario = findViewById(R.id.btn_calen);
         btnRegistrar = findViewById(R.id.reg_btn_registrarserv);
-
         descripcionTxt = findViewById(R.id.textview_descripcion);
-
-
 
         cargarSpinnerTipoLavado();
         configurarAutoPrecioDescripcion();
         configurarCalendario();
         configurarBotonRegistrar();
-
-
-
-
     }
-    private void cargarSpinnerTipoLavado() {
 
+    private void cargarSpinnerTipoLavado() {
         ArrayAdapter<TipoLavado> adapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
                 TipoLavado.values()
         );
-
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spTipoLavado.setAdapter(adapter);
     }
+
     private void configurarCalendario() {
         btnCalendario.setOnClickListener(v -> {
-
             Calendar calendario = Calendar.getInstance();
             int año = calendario.get(Calendar.YEAR);
             int mes = calendario.get(Calendar.MONTH);
@@ -108,10 +103,10 @@ public class RegistrarServicio extends AppCompatActivity {
                     },
                     año, mes, dia
             );
-
             dialog.show();
         });
     }
+
     private void mostrarTimePicker(EditText editText) {
         final Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -127,30 +122,26 @@ public class RegistrarServicio extends AppCompatActivity {
                 minute,
                 true
         );
-
         timePicker.show();
     }
 
     private void configurarAutoPrecioDescripcion() {
-
         spTipoLavado.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
                 TipoLavado tipo = (TipoLavado) spTipoLavado.getSelectedItem();
-
                 precioserv.setText(String.valueOf(tipo.getCosto()));
                 descripcionTxt.setText(tipo.getDescripcion());
             }
 
             @Override
-            public void onNothingSelected(android.widget.AdapterView<?> parent) { }
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {}
         });
     }
-    private void configurarBotonRegistrar() {
 
+    private void configurarBotonRegistrar() {
         btnRegistrar.setOnClickListener(v -> {
 
-            // VALIDACIÓN
             if (vehiculoserv.getText().toString().isEmpty() ||
                     empleadoserv.getText().toString().isEmpty() ||
                     precioserv.getText().toString().isEmpty() ||
@@ -162,39 +153,97 @@ public class RegistrarServicio extends AppCompatActivity {
                 return;
             }
 
-            // OBTENER TIPO DE LAVADO
-            TipoLavado tipoSeleccionado = (TipoLavado) spTipoLavado.getSelectedItem();
+            String cedulaEmpleado = empleadoserv.getText().toString().trim();
 
-            // CREAR DTO
-            int idVehiculo = Integer.parseInt(vehiculoserv.getText().toString());
-            int idEmpleado = Integer.parseInt(empleadoserv.getText().toString());
-
-            ServicioCreateDTO dto = new ServicioCreateDTO(
-                    tipoSeleccionado,
-                    fechaString(fechacalensrv),
-                    horaInicio.getText().toString(),
-                    horaFin.getText().toString(),
-                    indicacionesserv.getText().toString(),
-                    0, // estado activo
-                    EstadoServicio.PENDIENTE,
-                    idVehiculo,
-                    idEmpleado
-            );
-
-            // GUARDAR
-            serviciorepo.crearServicio(dto, new ServicioRepository.OnServiceResult() {
+            validarCedulaEmpleado(cedulaEmpleado, new OnCheckExist() {
                 @Override
-                public void onSuccess(String msg) {
-                    Toast.makeText(RegistrarServicio.this, msg, Toast.LENGTH_LONG).show();
-                    finish();
+                public void onExists() {
+
+                    // GENERAR EL NÚMERO AQUÍ
+                    serviciorepo.generarNroServicio(new ServicioRepository.OnNroGenerado() {
+                        @Override
+                        public void onSuccess(int nro) {
+                            crearServicioFinal(nro);
+                        }
+
+                        @Override
+                        public void onError(String err) {
+                            Toast.makeText(RegistrarServicio.this, err, Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+
+                @Override
+                public void onNotExists() {
+                    Toast.makeText(RegistrarServicio.this, "La cédula del empleado NO existe", Toast.LENGTH_LONG).show();
                 }
 
                 @Override
                 public void onError(String error) {
-                    Toast.makeText(RegistrarServicio.this, "ERROR: " + error, Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegistrarServicio.this, error, Toast.LENGTH_LONG).show();
                 }
             });
+
         });
+    }
+
+    private void crearServicioFinal(int nro_servicio) {
+
+        TipoLavado tipoSeleccionado = (TipoLavado) spTipoLavado.getSelectedItem();
+        int idVehiculo = Integer.parseInt(vehiculoserv.getText().toString());
+        String cedulaEmpleado = empleadoserv.getText().toString().trim();
+
+        ServicioCreateDTO dto = new ServicioCreateDTO(
+                tipoSeleccionado,
+                nro_servicio,
+                fechaString(fechacalensrv),
+                horaInicio.getText().toString(),
+                horaFin.getText().toString(),
+                indicacionesserv.getText().toString(),
+                0,
+                EstadoServicio.PENDIENTE,
+                idVehiculo,
+                cedulaEmpleado
+        );
+
+        serviciorepo.crearServicio(dto, new ServicioRepository.OnServiceResult() {
+            @Override
+            public void onSuccess(String msg) {
+                Toast.makeText(RegistrarServicio.this, msg, Toast.LENGTH_LONG).show();
+                finish();
+            }
+
+            @Override
+            public void onError(String error) {
+                Toast.makeText(RegistrarServicio.this, "ERROR: " + error, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void validarCedulaEmpleado(String cedula, OnCheckExist listener) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Usuarios");
+
+        ref.orderByChild("cedula").equalTo(cedula)
+                .get()
+                .addOnCompleteListener(task -> {
+
+                    if (!task.isSuccessful()) {
+                        listener.onError(task.getException().getMessage());
+                        return;
+                    }
+
+                    if (task.getResult().exists()) {
+                        listener.onExists();
+                    } else {
+                        listener.onNotExists();
+                    }
+                });
+    }
+
+    public interface OnCheckExist {
+        void onExists();
+        void onNotExists();
+        void onError(String error);
     }
 
     private String fechaString(TextInputEditText txt) {

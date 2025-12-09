@@ -2,8 +2,12 @@ package com.grupo5.carwashapp.repository;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.grupo5.carwashapp.models.Servicio;
 import com.grupo5.carwashapp.models.dtos.servicio.ServicioCreateDTO;
 import com.grupo5.carwashapp.models.dtos.servicio.ServicioUpdateDTO;
@@ -19,9 +23,8 @@ public class ServicioRepository {
         dbRef = FirebaseDatabase.getInstance().getReference("Servicios");
     }
 
-    // ---------------------------------------------------------
     // 1. Crear servicio
-    // ---------------------------------------------------------
+
     public void crearServicio(ServicioCreateDTO dto, OnServiceResult listener) {
 
         // Genera ID automático
@@ -34,6 +37,8 @@ public class ServicioRepository {
         // Construimos el objeto final Servicio
         Servicio servicio = new Servicio();
         servicio.setId_servicio(id);
+        servicio.setNro_servicio(dto.getNro_servicio());
+
 
         // Tipo de lavado
         servicio.setTipo_lavado(dto.getTipoLavado().name());
@@ -50,7 +55,8 @@ public class ServicioRepository {
         servicio.setEstadoServicio(dto.getEstadoServicio());
         servicio.setEstado(dto.getEstado()); // eliminación lógica
         servicio.setId_vehiculo(dto.getIdVehiculo());
-        servicio.setId_empleado(dto.getIdEmpleado());
+        servicio.setCedula_empleado(dto.getCedula_empleado());
+       // servicio.setId_empleado(dto.getIdEmpleado());
 
         // Guardar en Firebase
         dbRef.child(id).setValue(servicio)
@@ -58,9 +64,7 @@ public class ServicioRepository {
                 .addOnFailureListener(e -> listener.onError(e.getMessage()));
     }
 
-    // ---------------------------------------------------------
     // 2. Actualizar servicio
-    // ---------------------------------------------------------
     public void actualizarServicio(ServicioUpdateDTO dto, OnServiceResult listener) {
 
         HashMap<String, Object> updates = new HashMap<>();
@@ -85,9 +89,8 @@ public class ServicioRepository {
                 .addOnFailureListener(e -> listener.onError(e.getMessage()));
     }
 
-    // ---------------------------------------------------------
     // 3. Eliminar lógico (estado = 1)
-    // ---------------------------------------------------------
+
     public void eliminarLogico(String id, OnServiceResult listener) {
 
         dbRef.child(id).child("estado").setValue(1)
@@ -96,9 +99,38 @@ public class ServicioRepository {
     }
 
 
-    // ---------------------------------------------------------
+    public void generarNroServicio(OnNroGenerado listener) {
+        DatabaseReference contadorRef = dbRef.child("contador");
+
+        contadorRef.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+                Integer value = currentData.getValue(Integer.class);
+                if (value == null) value = 0;
+                value = value + 1;
+                currentData.setValue(value);
+                return Transaction.success(currentData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
+                if (committed) {
+                    listener.onSuccess(currentData.getValue(Integer.class));
+                } else {
+                    listener.onError("Error generando número");
+                }
+            }
+        });
+    }
+
+    public interface OnNroGenerado {
+        void onSuccess(int nro);
+        void onError(String err);
+    }
+
     // 4. Callback interface
-    // ---------------------------------------------------------
+
     public interface OnServiceResult {
         void onSuccess(String msg);
         void onError(String error);
