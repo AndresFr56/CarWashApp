@@ -14,17 +14,17 @@ public class ServicioUpdateDTO {
     private String horaFin;
     private String indicaciones;
     //private String descripcionServicio;
-    private EstadoServicio estadoServicio  ;// Podría ser "PENDIENTE", "EN_PROCESO", "COMPLETADO", "CANCELADO"
+    private EstadoServicio estadoServicio  ;// es  "PENDIENTE", "EN_PROCESO", "COMPLETADO", "CANCELADO"
     private int estado;
     private int idVehiculo;
-    private int idEmpleado;
+    private String cedula_empleado;
 
     public ServicioUpdateDTO(){
     }
 
     public ServicioUpdateDTO(String id_servicio,TipoLavado tipoLavado, String fecha, String horaInicio, String horaFin,
                              String indicaciones/*., String descripcionServicio*/,int estado, EstadoServicio estadoServicio,
-                             int idVehiculo, int idEmpleado){
+                             int idVehiculo, String cedula_empleado){
         this.id_servicio=id_servicio;
         this.tipoLavado = tipoLavado;
         this.fecha = fecha;
@@ -35,7 +35,7 @@ public class ServicioUpdateDTO {
         this.estadoServicio = estadoServicio;
         this.estado =estado;
         this.idVehiculo = idVehiculo;
-        this.idEmpleado = idEmpleado;
+       this.cedula_empleado=cedula_empleado;
     }
 
     public String getId_servicio() {
@@ -110,11 +110,13 @@ public class ServicioUpdateDTO {
         this.idVehiculo = idVehiculo;
     }
 
-    public int getIdEmpleado() {
-        return idEmpleado;
+
+
+    public String getCedula_empleado() {
+        return cedula_empleado;
     }
 
-    public void setIdEmpleado(int idEmpleado) {
-        this.idEmpleado = idEmpleado;
+    public void setCedula_empleado(String cedula_empleado) {
+        this.cedula_empleado = cedula_empleado;
     }
 }

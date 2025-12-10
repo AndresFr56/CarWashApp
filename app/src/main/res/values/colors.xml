@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="titleColor">#7CCDF2</color>
     <color name="btnColor">#0B4C6B</color>
+    <color name="btnActulizar">#2A9D8F</color>
     <color name="btnRegistrar">#315FD4</color>
     <color name="btnBorrar">#29B6F6</color>
     <color name="btnCancelar">#B0BEC5</color>

@@ -81,7 +81,8 @@ public class ServicioRepository {
         updates.put("estadoServicio", dto.getEstadoServicio());
         updates.put("estado", dto.getEstado());
         updates.put("id_vehiculo", dto.getIdVehiculo());
-        updates.put("id_empleado", dto.getIdEmpleado());
+        updates.put("cedula_empleado",dto.getCedula_empleado());
+        //updates.put("id_empleado", dto.getIdEmpleado());
 
         dbRef.child(dto.getId_servicio())
                 .updateChildren(updates)
@@ -97,6 +98,50 @@ public class ServicioRepository {
                 .addOnSuccessListener(aVoid -> listener.onSuccess("Servicio eliminado lógicamente"))
                 .addOnFailureListener(e -> listener.onError(e.getMessage()));
     }
+    public void buscarPorId(String id, OnBuscarServicio listener) {
+        dbRef.child(id)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        listener.onError(task.getException().getMessage());
+                        return;
+                    }
+                    if (!task.getResult().exists()) {
+                        listener.onNotFound();
+                    } else {
+                        Servicio servicio = task.getResult().getValue(Servicio.class);
+                        listener.onFound(servicio);
+                    }
+                });
+    }
+    public void buscarPorNumero(int nro, OnBuscarServicio listener) {
+        dbRef.orderByChild("nro_servicio")
+                .equalTo(nro)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        listener.onError(task.getException().getMessage());
+                        return;
+                    }
+                    if (!task.getResult().exists()) {
+                        listener.onNotFound();
+                    } else {
+                        for (DataSnapshot ds : task.getResult().getChildren()) {
+                            Servicio servicio = ds.getValue(Servicio.class);
+                            listener.onFound(servicio);
+                            return;
+                        }
+                    }
+                });
+    }
+    public interface OnBuscarServicio {
+        void onFound(Servicio servicio);
+        void onNotFound();
+        void onError(String error);
+    }
+
+
+
 
 
     public void generarNroServicio(OnNroGenerado listener) {

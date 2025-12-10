@@ -21,6 +21,7 @@ import com.grupo5.carwashapp.activities.facturacion.RegistrarFactura;
 import com.grupo5.carwashapp.activities.facturacion.ConsultarFactura;
 import com.grupo5.carwashapp.activities.servicio.ConsultarServicio;
 import com.grupo5.carwashapp.activities.servicio.RegistrarServicio;
+import com.grupo5.carwashapp.activities.servicio.servicio_menu;
 import com.grupo5.carwashapp.activities.usuario.ConsultarUsuario;
 import com.grupo5.carwashapp.activities.usuario.RegistrarUsuario;
 import com.grupo5.carwashapp.activities.vehiculo.ConsultarVehiculo;
@@ -57,7 +58,7 @@ public class Home extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // CAMBIO AQUÍ: La nueva actividad de destino
-                Intent i = new Intent(Home.this, RegistrarServicio.class);
+                Intent i = new Intent(Home.this, servicio_menu.class);
                 startActivity(i);
             }
         });

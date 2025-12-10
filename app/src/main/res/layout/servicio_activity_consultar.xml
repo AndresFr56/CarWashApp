@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTint="@color/btnCalendar"
     tools:context=".activities.servicio.ConsultarServicio">
 
     <ScrollView
@@ -32,17 +33,19 @@
                     android:paddingEnd="10dp">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txt_id_serv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Id del Servicio" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
-                    android:id="@+id/button"
+                    android:id="@+id/btn_buscar_serv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Button" />
+                    android:backgroundTint="@color/btnCalendar"
+                    android:text="Buscar" />
             </LinearLayout>
 
             <androidx.cardview.widget.CardView
@@ -76,7 +79,7 @@
                             android:layout_weight="1">
 
                             <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/consul_empleado"
+                                android:id="@+id/consul_empleadoserv"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" />
                         </com.google.android.material.textfield.TextInputLayout>
@@ -101,6 +104,7 @@
                             android:layout_weight="1">
 
                             <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/consul_vehiculoserv"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" />
                         </com.google.android.material.textfield.TextInputLayout>
@@ -123,7 +127,7 @@
                             android:textSize="17sp" />
 
                         <Spinner
-                            android:id="@+id/spinner2"
+                            android:id="@+id/sp_tipolavado"
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
                             android:layout_weight="1" />
@@ -135,22 +139,13 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/textView6"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:id="@+id/cons_precioserv"
+                            android:layout_width="match_parent"
+                            android:layout_height="25dp"
                             android:layout_weight="1"
                             android:text="Precio"
                             android:textSize="17sp" />
 
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="150dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
-                        </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
 
                     <LinearLayout
@@ -158,31 +153,77 @@
                         android:layout_height="match_parent"
                         android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/textView11"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Descripcion"
-                            android:textSize="17sp" />
-
                         <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
+                            android:layout_height="wrap_content">
 
                             <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/cons_descripserv"
                                 android:layout_width="match_parent"
-                                android:layout_height="100sp" />
+                                android:layout_height="wrap_content"
+                                android:hint="Descripción" />
                         </com.google.android.material.textfield.TextInputLayout>
 
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/con_fechaserv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Fecha" />
+
+                            <Button
+                                android:id="@+id/btn_consultafechaserv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:backgroundTint="@color/btnCalendar"
+                                android:text="Fecha"
+                                app:icon="@android:drawable/ic_menu_my_calendar"
+                                app:iconSize="40dp" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/textView10"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Hora Inicio    Hora Fin" />
+
+                        <EditText
+                            android:id="@+id/cons_horainix_serv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:inputType="time" />
+
+                        <EditText
+                            android:id="@+id/con_horafin_serv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:inputType="time"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="10dp" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:paddingTop="10dp">
 
                         <TextView
                             android:id="@+id/textView12"
@@ -196,6 +237,7 @@
                             android:layout_height="100sp">
 
                             <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/txt_con_indicaciones"
                                 android:layout_width="match_parent"
                                 android:layout_height="100sp" />
                         </com.google.android.material.textfield.TextInputLayout>
@@ -217,13 +259,14 @@
                             android:textSize="16sp" />
 
                         <Spinner
-                            android:id="@+id/spinner3"
+                            android:id="@+id/sp_estadoserv"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1" />
                     </LinearLayout>
 
                 </LinearLayout>
+
             </androidx.cardview.widget.CardView>
 
             <LinearLayout
@@ -237,7 +280,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:backgroundTint="@color/btnCalendar"
+                    android:backgroundTint="@color/btnActulizar"
                     android:text="Actualizar" />
 
                 <Button
