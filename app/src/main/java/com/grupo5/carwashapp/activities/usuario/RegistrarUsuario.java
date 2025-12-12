@@ -1,6 +1,5 @@
 package com.grupo5.carwashapp.activities.usuario;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -15,7 +14,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.grupo5.carwashapp.R;
-import com.grupo5.carwashapp.activities.Login;
 import com.grupo5.carwashapp.models.dtos.usuario.UsuarioCreateDto;
 import com.grupo5.carwashapp.models.enums.Roles;
 import com.grupo5.carwashapp.repository.UsuarioRepository;
@@ -177,7 +175,6 @@ public class RegistrarUsuario extends AppCompatActivity {
     }
 
     public void cancelarRegistro(View v) {
-        Intent ventanaLogin = new Intent(v.getContext(), Login.class);
-        startActivity(ventanaLogin);
+        finish();
     }
 }

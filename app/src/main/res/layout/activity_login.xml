@@ -44,7 +44,7 @@
                 android:id="@+id/login_txt_correo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/emailicon"
+                android:drawableStart="@drawable/ic_emailicon"
                 android:drawablePadding="10sp"
                 android:hint="Correo"
                 android:inputType="textEmailAddress" />
@@ -60,7 +60,7 @@
                 android:id="@+id/login_txt_clave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/passwordicon"
+                android:drawableStart="@drawable/ic_passwordicon"
                 android:drawablePadding="10sp"
                 android:hint="Clave"
                 android:inputType="text|textPassword" />

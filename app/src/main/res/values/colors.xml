@@ -10,4 +10,8 @@
     <color name="btnCancelar">#B0BEC5</color>
     <color name="btnCalendar">#4E7AD4</color>
     <color name="btnEliminar">#9C2007</color>
+    <color name="green">#158E19</color>
+    <color name="orange">#E4923A</color>
+    <color name="gray">#F2F9FA</color>
+    <color name="blue">#B8DCF2</color>
 </resources>

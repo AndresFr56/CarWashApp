@@ -1,8 +1,6 @@
 package com.grupo5.carwashapp.activities.usuario;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -11,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -21,11 +20,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.grupo5.carwashapp.R;
-import com.grupo5.carwashapp.activities.Home;
-import com.grupo5.carwashapp.activities.Login;
-import com.grupo5.carwashapp.database.ConexionBD;
 import com.grupo5.carwashapp.models.dtos.usuario.UsuarioUpdateDto;
-import com.grupo5.carwashapp.models.enums.Estado;
+import com.grupo5.carwashapp.models.enums.EstadoUsuarios;
 import com.grupo5.carwashapp.models.enums.Roles;
 import com.grupo5.carwashapp.repository.UsuarioRepository;
 
@@ -72,10 +68,10 @@ public class ConsultarUsuario extends AppCompatActivity {
         // Llenamos los estados con los valores del enum
         spEstado = findViewById(R.id.consul_spn_estado);
 
-        ArrayAdapter<Estado> adapterEstados = new ArrayAdapter<>(
+        ArrayAdapter<EstadoUsuarios> adapterEstados = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
-                Estado.values()
+                EstadoUsuarios.values()
         );
 
         adapterEstados.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -110,7 +106,6 @@ public class ConsultarUsuario extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
     }
@@ -196,7 +191,7 @@ public class ConsultarUsuario extends AppCompatActivity {
         usuarioActualizado.setCorreo(correoT.getText().toString());
         usuarioActualizado.setDireccion(direccionT.getText().toString());
         usuarioActualizado.setRol(Roles.values()[spRol.getSelectedItemPosition()]);
-        usuarioActualizado.setEstado(Estado.values()[spEstado.getSelectedItemPosition()]);
+        usuarioActualizado.setEstado(EstadoUsuarios.values()[spEstado.getSelectedItemPosition()]);
 
         if (!validarFormulario()) {
             return;
@@ -214,10 +209,22 @@ public class ConsultarUsuario extends AppCompatActivity {
     }
 
     public void eliminarUsuario(View v) {
+        new AlertDialog.Builder(this)
+                .setTitle("Eliminar Usuario")
+                .setMessage("¿Está seguro que desea eliminar permanentemente al usuario " + usuarioActual.getNombres() + "?")
+                .setPositiveButton("Sí, eliminar", (dialog, which) -> {
+                    realizarEliminacion(v);
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+    private void realizarEliminacion(View v) {
         repoUsuario.eliminarUsuarioFisico(usuarioActual.getUid(), task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(v.getContext(), "Usuario eliminado correctamente", Toast.LENGTH_SHORT).show();
                 limpiarCampos(v);
+                usuarioActual = null;
             } else {
                 Toast.makeText(v.getContext(), "No se pudo realizar la eliminación", Toast.LENGTH_SHORT).show();
             }
@@ -255,8 +262,7 @@ public class ConsultarUsuario extends AppCompatActivity {
         direccionT.setText("");
     }
 
-    public void cancelar(View v) {
-        Intent ventanaHome = new Intent(v.getContext(), Home.class);
-        startActivity(ventanaHome);
+    public void regresar(View v) {
+        finish();
     }
 }

@@ -18,13 +18,17 @@
             android:name=".activities.servicio.servicio_principal"
             android:exported="false" />
         <activity
-            android:name=".GestionarUsuarios"
+            android:name=".activities.usuario.MenuUsuarios"
             android:exported="false" />
         <activity
-            android:name=".MenuPrincipal"
-            android:exported="false"
-            android:label="@string/title_activity_menu_principal"
-            android:theme="@style/Theme.CarWashApp" />
+            android:name=".activities.facturacion.MenuFacturacion"
+            android:exported="false" />
+        <activity
+            android:name=".menuPrincipalFactura"
+            android:exported="false" />
+        <activity
+            android:name=".activities.facturacion.VisualizarFactura"
+            android:exported="false" />
         <activity
             android:name=".activities.servicio.ConsultarServicio"
             android:exported="false" />

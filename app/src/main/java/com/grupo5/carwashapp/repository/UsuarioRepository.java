@@ -70,6 +70,12 @@ public class UsuarioRepository {
         dbRefer.addListenerForSingleValueEvent(listener);
     }
 
+    public void obtenerUsuariosPorRol(String rol, ValueEventListener listener) {
+        dbRefer.orderByChild("rol")
+                .equalTo(rol)
+                .addListenerForSingleValueEvent(listener);
+    }
+
     public void login(String correo, String contrasenia, OnCompleteListener<AuthResult> listener) {
         auth.signInWithEmailAndPassword(correo, contrasenia)
                 .addOnCompleteListener(listener);
