@@ -33,6 +33,8 @@ public class ConsultarServicio extends AppCompatActivity {
     private TextView descripcionTxt,fechacalensrv,precioserv;
 
     private ServicioRepository serviciorepo;
+    private String idRealServicio = null;
+
 
 
     @Override
@@ -67,6 +69,8 @@ public class ConsultarServicio extends AppCompatActivity {
         btnEliminar = findViewById(R.id.btn_serv_eliminar);
         cargarSpinnerEstadoServicio();
         cargarSpinnerTipoLavado();
+        configurarAutoPrecioDescripcion();
+        configurarTimePickers();
 
 
         btnConsultar.setOnClickListener(v -> {
@@ -78,13 +82,19 @@ public class ConsultarServicio extends AppCompatActivity {
                 return;
             }
 
-            // Si es número → buscar por nro_servicio
             if (textoBusqueda.matches("\\d+")) {
                 int nro = Integer.parseInt(textoBusqueda);
 
                 serviciorepo.buscarPorNumero(nro, new ServicioRepository.OnBuscarServicio() {
                     @Override
                     public void onFound(Servicio s) {
+
+                        if (s.getEstado() == 1) {
+                            Toast.makeText(ConsultarServicio.this,
+                                    "Este servicio fue eliminado", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
                         cargarEnPantalla(s);
                     }
 
@@ -99,10 +109,17 @@ public class ConsultarServicio extends AppCompatActivity {
                     }
                 });
 
-            } else { // Caso contrario, buscar por ID
+            } else {
                 serviciorepo.buscarPorId(textoBusqueda, new ServicioRepository.OnBuscarServicio() {
                     @Override
                     public void onFound(Servicio s) {
+
+                        if (s.getEstado() == 1) {
+                            Toast.makeText(ConsultarServicio.this,
+                                    "Este servicio fue eliminado", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
                         cargarEnPantalla(s);
                     }
 
@@ -119,11 +136,12 @@ public class ConsultarServicio extends AppCompatActivity {
             }
         });
 
+
         btnModificar.setOnClickListener(v -> {
 
             String id = id_serv.getText().toString();
 
-            if (id.isEmpty()) {
+            if (idRealServicio == null) {
                 Toast.makeText(this, "Primero busque un servicio", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -158,6 +176,7 @@ public class ConsultarServicio extends AppCompatActivity {
                 public void onError(String error) {
                     Toast.makeText(ConsultarServicio.this, error, Toast.LENGTH_LONG).show();
                 }
+
             });
 
         });
@@ -165,7 +184,7 @@ public class ConsultarServicio extends AppCompatActivity {
 
             String id = id_serv.getText().toString();
 
-            if (id.isEmpty()) {
+            if (idRealServicio == null) {
                 Toast.makeText(this, "Primero busque un servicio", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -273,7 +292,9 @@ public class ConsultarServicio extends AppCompatActivity {
         spestadoserv.setSelection(s.getEstadoServicio().ordinal());
 
         // Guarda el ID real para actualización y eliminación
-        id_serv.setText(s.getId_servicio());
+       // id_serv.setText(s.getId_servicio());
+        idRealServicio = s.getId_servicio();   // LO GUARDAS
+
     }
 
 }

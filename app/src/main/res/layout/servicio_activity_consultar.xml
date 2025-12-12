@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="@color/btnCalendar"
+    android:background="@drawable/background"
     tools:context=".activities.servicio.ConsultarServicio">
 
     <ScrollView
@@ -288,6 +288,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:backgroundTint="@color/btnEliminar"
                     android:text="Eliminar" />
             </LinearLayout>
 
@@ -301,6 +302,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:backgroundTint="@color/btnCancelar"
                     android:text="Cancelar" />
             </LinearLayout>
         </LinearLayout>
