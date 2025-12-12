@@ -5,25 +5,29 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_carwash"
     tools:context=".activities.facturacion.RegistrarFactura">
 
     <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
             <LinearLayout
-                android:layout_width="350sp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20sp"
-                android:layout_marginBottom="20sp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -35,12 +39,15 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
+                        android:id="@+id/reg_fact_txt_fecha"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:editable="false"
+                        android:enabled="false"
                         android:hint="dd/mm/aaaa" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -48,8 +55,9 @@
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:cardBackgroundColor="@color/titleColor">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20sp"
+                app:cardBackgroundColor="@color/blue">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -71,9 +79,9 @@
                         android:layout_height="match_parent">
 
                         <Spinner
-                            android:id="@+id/spinner"
+                            android:id="@+id/fact_spn_cliente"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="48dp" />
 
                     </androidx.cardview.widget.CardView>
                 </LinearLayout>
@@ -81,9 +89,8 @@
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="20sp"
-                app:cardBackgroundColor="@color/titleColor">
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/blue">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -93,46 +100,60 @@
                     android:paddingVertical="10sp">
 
                     <TextView
-                        android:id="@+id/fact_lbl_servicio"
+                        android:id="@+id/fact_lbl_vehiculo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingTop="5sp"
-                        android:text="Servicios"
+                        android:layout_marginBottom="10sp"
+                        android:text="Vehículo"
                         android:textStyle="bold" />
 
-                    <com.google.android.material.textfield.TextInputLayout
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <LinearLayout
+                        <Spinner
+                            android:id="@+id/fact_spn_vehiculo"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="horizontal">
+                            android:layout_height="48dp" />
 
-                            <CheckBox
-                                android:id="@+id/fact_chk_lavado"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Lavado" />
-
-                            <CheckBox
-                                android:id="@+id/fact_chk_encerado"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Encerado" />
-                        </LinearLayout>
-
-                    </com.google.android.material.textfield.TextInputLayout>
+                    </androidx.cardview.widget.CardView>
                 </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20sp"
+                app:cardBackgroundColor="@color/blue">
+
+                <TextView
+                    android:id="@+id/fact_lbl_servicio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10sp"
+                    android:paddingTop="5sp"
+                    android:text="Servicios"
+                    android:textStyle="bold" />
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20sp">
+
+                    <LinearLayout
+                        android:id="@+id/reg_fact_contenedorServicios"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingHorizontal="10sp"
+                        android:paddingVertical="10sp" />
+                </ScrollView>
 
             </androidx.cardview.widget.CardView>
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="20sp"
                 android:orientation="horizontal"
                 android:paddingHorizontal="10sp"
@@ -142,24 +163,24 @@
                     android:id="@+id/fact_lbl_subtotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="20sp"
+                    android:layout_marginEnd="20dp"
                     android:layout_weight="1"
                     android:text="Subtotal" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="150sp"
+                        android:id="@+id/reg_fact_txt_subtotal"
+                        android:layout_width="90dp"
                         android:layout_height="wrap_content"
-                        android:hint="hint" />
+                        android:enabled="false"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:textSize="12sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"></LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -183,9 +204,13 @@
                     android:layout_weight="1">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="150sp"
+                        android:id="@+id/reg_fact_txt_iva"
+                        android:layout_width="90dp"
                         android:layout_height="wrap_content"
-                        android:hint="hint" />
+                        android:enabled="false"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:textSize="12sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
@@ -193,7 +218,6 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:orientation="horizontal"
                 android:paddingHorizontal="10sp"
                 android:paddingVertical="10sp">
@@ -210,10 +234,55 @@
                     android:layout_height="wrap_content">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="150sp"
+                        android:id="@+id/reg_fact_txt_total"
+                        android:layout_width="90dp"
                         android:layout_height="wrap_content"
-                        android:hint="hint" />
+                        android:enabled="false"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:textSize="12sp" />
                 </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20sp"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/reg_fact_btn_registrar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/btnRegistrar"
+                    android:onClick="guardarFactura"
+                    android:text="Registrar" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/reg_fact_btn_limpiar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="2dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/btnBorrar"
+                        android:text="Limpiar" />
+
+                    <Button
+                        android:id="@+id/reg_fact_btn_cancelar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="2dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/btnCancelar"
+                        android:onClick="cancelar"
+                        android:text="Cancelar" />
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>

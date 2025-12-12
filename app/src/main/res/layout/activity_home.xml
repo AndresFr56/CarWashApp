@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="@drawable/background_carwash"
     tools:context=".activities.Home">
 
     <TextView
@@ -29,7 +29,7 @@
         android:layout_width="361dp"
         android:layout_height="36dp"
         android:layout_marginTop="32dp"
-        android:text="CarWashApp es una aplicación para gestionar los usuarios, vehículos, servicios y facturación del negocio."
+        android:text="CarWashApp es una aplicación para gestionar los usuarios, vehículos, servicios y facturación del negocio"
         android:textColor="#666666"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"

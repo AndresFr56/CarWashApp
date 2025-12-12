@@ -1,43 +1,59 @@
 package com.grupo5.carwashapp.models;
 
-public class DetalleFactura {
-    private int id_detalle;
-    private int id_factura;
-    private int id_servicio;
+import com.google.firebase.database.Exclude;
+
+import java.io.Serializable;
+
+public class DetalleFactura implements Serializable {
+    @Exclude
+    private String servicioId;
+    private String nombreServicio;
+    private double precioUnitario;
+    private int cantidad;
     private double subtotal;
 
     public DetalleFactura() {
     }
 
-    public DetalleFactura(int id_factura, int id_servicio, double subtotal) {
-        this.id_factura = id_factura;
-        this.id_servicio = id_servicio;
-        this.subtotal = subtotal;
+    public DetalleFactura(String servicioId, String nombreServicio, double precioUnitario, int cantidad) {
+        this.servicioId = servicioId;
+        this.nombreServicio = nombreServicio;
+        this.precioUnitario = precioUnitario;
+        this.cantidad = cantidad;
+        this.subtotal = precioUnitario * cantidad;
     }
 
     // Getters y Setters
-    public int getId_detalle() {
-        return id_detalle;
+    public String getServicioId() {
+        return servicioId;
     }
 
-    public void setId_detalle(int id_detalle) {
-        this.id_detalle = id_detalle;
+    public void setServicioId(String servicioId) {
+        this.servicioId = servicioId;
     }
 
-    public int getId_factura() {
-        return id_factura;
+    public String getNombreServicio() {
+        return nombreServicio;
     }
 
-    public void setId_factura(int id_factura) {
-        this.id_factura = id_factura;
+    public void setNombreServicio(String nombreServicio) {
+        this.nombreServicio = nombreServicio;
     }
 
-    public int getId_servicio() {
-        return id_servicio;
+    public double getPrecioUnitario() {
+        return precioUnitario;
     }
 
-    public void setId_servicio(int id_servicio) {
-        this.id_servicio = id_servicio;
+    public void setPrecioUnitario(double precioUnitario) {
+        this.precioUnitario = precioUnitario;
+    }
+
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
     }
 
     public double getSubtotal() {

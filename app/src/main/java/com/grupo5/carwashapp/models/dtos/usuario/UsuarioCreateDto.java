@@ -1,10 +1,11 @@
 package com.grupo5.carwashapp.models.dtos.usuario;
 
-import com.grupo5.carwashapp.models.enums.Estado;
+import com.grupo5.carwashapp.models.enums.EstadoUsuarios;
 import com.grupo5.carwashapp.models.enums.Roles;
 
 public class UsuarioCreateDto {
 
+    private final EstadoUsuarios estado = EstadoUsuarios.ACTIVO;
     private String cedula;
     private String nombres;
     private String apellidos;
@@ -12,7 +13,6 @@ public class UsuarioCreateDto {
     private String correo;
     private String direccion;
     private Roles rol;
-    private final Estado estado = Estado.Activo;
 
     // Constructor vacio
     public UsuarioCreateDto() {
@@ -86,7 +86,7 @@ public class UsuarioCreateDto {
         this.rol = rol;
     }
 
-    public Estado getEstado() {
+    public EstadoUsuarios getEstado() {
         return estado;
     }
 }

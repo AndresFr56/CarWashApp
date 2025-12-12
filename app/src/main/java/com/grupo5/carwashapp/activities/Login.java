@@ -1,6 +1,7 @@
 package com.grupo5.carwashapp.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -20,7 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.grupo5.carwashapp.R;
 import com.grupo5.carwashapp.activities.usuario.RegistrarUsuario;
 import com.grupo5.carwashapp.models.Usuario;
-import com.grupo5.carwashapp.models.enums.Estado;
+import com.grupo5.carwashapp.models.enums.EstadoUsuarios;
 import com.grupo5.carwashapp.repository.UsuarioRepository;
 
 public class Login extends AppCompatActivity {
@@ -67,14 +68,19 @@ public class Login extends AppCompatActivity {
                             Usuario usuario = snapshot.getValue(Usuario.class);
 
                             if (usuario != null) {
-                                if (usuario.getEstado() == Estado.Inactivo) {
+                                if (usuario.getEstado() == EstadoUsuarios.INACTIVO) {
                                     Toast.makeText(v.getContext(), "Su usuario está inactivo", Toast.LENGTH_LONG).show();
                                     FirebaseAuth.getInstance().signOut();
                                     return;
                                 }
 
+                                SharedPreferences shpUsuario = getSharedPreferences("CarWashSession", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = shpUsuario.edit();
+                                editor.putString("uidUsuario", usuario.getUid());
+                                editor.putString("nombreUsuario", usuario.getNombres());
+                                editor.apply();
+
                                 Intent ventanaPrincipal = new Intent(v.getContext(), Home.class);
-                                ventanaPrincipal.putExtra("user", usuario.getNombres());
                                 startActivity(ventanaPrincipal);
                                 finish();
                             }
