@@ -1,11 +1,13 @@
 package com.grupo5.carwashapp.activities;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -17,14 +19,16 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.grupo5.carwashapp.R;
+import com.grupo5.carwashapp.activities.facturacion.MenuFacturacion;
 import com.grupo5.carwashapp.activities.facturacion.RegistrarFactura;
-import com.grupo5.carwashapp.activities.facturacion.ConsultarFactura;
 import com.grupo5.carwashapp.activities.servicio.ConsultarServicio;
 import com.grupo5.carwashapp.activities.servicio.RegistrarServicio;
 import com.grupo5.carwashapp.activities.usuario.ConsultarUsuario;
+import com.grupo5.carwashapp.activities.usuario.MenuUsuarios;
 import com.grupo5.carwashapp.activities.usuario.RegistrarUsuario;
 import com.grupo5.carwashapp.activities.vehiculo.ConsultarVehiculo;
 import com.grupo5.carwashapp.activities.vehiculo.RegistrarVehiculo;
+import com.grupo5.carwashapp.repository.UsuarioRepository;
 
 
 public class Home extends AppCompatActivity {
@@ -45,44 +49,31 @@ public class Home extends AppCompatActivity {
         cardVehiculos = findViewById(R.id.home_card_vehiculos);
         cardFacturacion = findViewById(R.id.home_card_facturacion);
 
-        cardUsuarios.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Home.this, RegistrarUsuario.class);
-                startActivity(i);
-            }
+        cardUsuarios.setOnClickListener(v -> {
+            Intent i = new Intent(Home.this, MenuUsuarios.class);
+            startActivity(i);
         });
 
-        cardServicios.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Home.this, RegistrarFactura.class);
-                startActivity(i);
-            }
+        cardServicios.setOnClickListener(v -> {
+            Intent i = new Intent(Home.this, RegistrarFactura.class);
+            startActivity(i);
         });
 
-        cardVehiculos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Home.this, ConsultarUsuario.class);
-                startActivity(i);
-            }
+        cardVehiculos.setOnClickListener(v -> {
+            Intent i = new Intent(Home.this, ConsultarUsuario.class);
+            startActivity(i);
         });
 
-        // CLIC EN FACTURACION
-        cardFacturacion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Home.this, Login.class);
-                startActivity(i);
-            }
+        cardFacturacion.setOnClickListener(v -> {
+            Intent i = new Intent(Home.this, MenuFacturacion.class);
+            startActivity(i);
         });
-
-        Intent infoLogin = getIntent();
-        String usuarioLogin = infoLogin.getStringExtra( "user");
 
         TextView mensajeBienvenida = findViewById(R.id.home_lbl_bienvenida);
-        mensajeBienvenida.setText("Bienvenido " + usuarioLogin +"!");
+        SharedPreferences prefs = getSharedPreferences("CarWashSession", MODE_PRIVATE);
+        String nombreUser = prefs.getString("nombreUsuario", "Usuario");
+
+        mensajeBienvenida.setText(String.format("Bienvenido, %s", nombreUser));
     }
 
     @Override
@@ -118,7 +109,7 @@ public class Home extends AppCompatActivity {
         }
 
         //Submenu de Servicios
-        if (item.getItemId() == R.id.mp_vehiculo_nuevo){
+        if (item.getItemId() == R.id.mp_servicio_nuevo){
             Intent ventanaRegistroServicio = new Intent( this, RegistrarServicio.class);
             startActivity(ventanaRegistroServicio);
         }
@@ -128,26 +119,30 @@ public class Home extends AppCompatActivity {
             startActivity(ventanaConsultaServicio);
         }
 
-        //Submenu de Facturación
-        if (item.getItemId() == R.id.mp_vehiculo_nuevo){
-            Intent ventanaRegistroFacturacion = new Intent( this, RegistrarFactura.class);
-            startActivity(ventanaRegistroFacturacion);
-        }
-
-        if (item.getItemId() == R.id.mp_vehiculo_consultar){
-            Intent ventanaConsultaFactura = new Intent( this, ConsultarFactura.class);
-            startActivity(ventanaConsultaFactura);
-        }
-
         if (item.getItemId() == R.id.mp_acercaDe){
+            Dialog acercaDe = new Dialog(this);
+            acercaDe.setContentView(R.layout.dialog_acerca_de);
+            acercaDe.setCancelable(false);
+
+            Button btnRegresar = acercaDe.findViewById(R.id.dlg_btn_regresar);
+            btnRegresar.setOnClickListener(v -> acercaDe.dismiss());
+
+            acercaDe.show();
+
+            return true;
         }
 
         if (item.getItemId() == R.id.mp_cerrarSesion) {
-            Intent ventanaLogin = new Intent(this, Login.class);
-            startActivity(ventanaLogin);
+            SharedPreferences prefs = getSharedPreferences("CarWashSession", MODE_PRIVATE);
+            prefs.edit().clear().apply();
+
+            UsuarioRepository repoUsuario = new UsuarioRepository();
+            repoUsuario.logout();
+
+            Intent intent = new Intent(this, Login.class);
+            startActivity(intent);
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 }
