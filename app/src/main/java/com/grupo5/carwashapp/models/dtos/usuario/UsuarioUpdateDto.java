@@ -1,7 +1,7 @@
 package com.grupo5.carwashapp.models.dtos.usuario;
 
 import com.google.firebase.database.Exclude;
-import com.grupo5.carwashapp.models.enums.EstadoUsuarios;
+import com.grupo5.carwashapp.models.enums.Estados;
 import com.grupo5.carwashapp.models.enums.Roles;
 
 public class UsuarioUpdateDto {
@@ -14,13 +14,13 @@ public class UsuarioUpdateDto {
     private String correo;
     private String direccion;
     private Roles rol;
-    private EstadoUsuarios estado;
+    private Estados estado;
 
     public UsuarioUpdateDto() {
     }
 
     public UsuarioUpdateDto(String cedula, String nombres, String apellidos, String telefono,
-                            String correo, String direccion, Roles rol, EstadoUsuarios estado) {
+                            String correo, String direccion, Roles rol, Estados estado) {
         this.cedula = cedula;
         this.nombres = nombres;
         this.apellidos = apellidos;
@@ -97,11 +97,11 @@ public class UsuarioUpdateDto {
         this.rol = rol;
     }
 
-    public EstadoUsuarios getEstado() {
+    public Estados getEstado() {
         return estado;
     }
 
-    public void setEstado(EstadoUsuarios estado) {
+    public void setEstado(Estados estado) {
         this.estado = estado;
     }
 }

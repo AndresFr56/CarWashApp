@@ -19,8 +19,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.grupo5.carwashapp.R;
+import com.grupo5.carwashapp.activities.catalogoServicios.ConsultarCatalogoServicios;
+import com.grupo5.carwashapp.activities.catalogoServicios.RegistrarCatalogoServicios;
 import com.grupo5.carwashapp.activities.facturacion.MenuFacturacion;
-import com.grupo5.carwashapp.activities.facturacion.RegistrarFactura;
 import com.grupo5.carwashapp.activities.servicio.ConsultarServicio;
 import com.grupo5.carwashapp.activities.servicio.RegistrarServicio;
 import com.grupo5.carwashapp.activities.usuario.ConsultarUsuario;
@@ -55,12 +56,12 @@ public class Home extends AppCompatActivity {
         });
 
         cardServicios.setOnClickListener(v -> {
-            Intent i = new Intent(Home.this, RegistrarFactura.class);
+            Intent i = new Intent(Home.this, RegistrarCatalogoServicios.class);
             startActivity(i);
         });
 
         cardVehiculos.setOnClickListener(v -> {
-            Intent i = new Intent(Home.this, ConsultarUsuario.class);
+            Intent i = new Intent(Home.this, ConsultarCatalogoServicios.class);
             startActivity(i);
         });
 
