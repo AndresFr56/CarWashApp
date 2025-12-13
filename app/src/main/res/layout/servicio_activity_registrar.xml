@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
@@ -39,7 +40,7 @@
                         android:id="@+id/reg_txt_vehiserv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Vehiculo"
+                        android:hint="Placa del Vehiculo"
                         android:inputType="number" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -53,6 +54,36 @@
                         android:layout_height="wrap_content"
                         android:hint="Cedula del Empleado" />
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/blue">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:paddingHorizontal="10sp"
+                        android:paddingVertical="10sp">
+
+                        <TextView
+                            android:id="@+id/textView11"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Empleado" />
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <Spinner
+                                android:id="@+id/sp_empleado_serv"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp" />
+                        </androidx.cardview.widget.CardView>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
                 <LinearLayout
                     android:layout_width="match_parent"

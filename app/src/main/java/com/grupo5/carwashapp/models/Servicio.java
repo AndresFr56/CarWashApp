@@ -15,6 +15,7 @@ public class Servicio {
     private String indicaciones;
     private String descripcion_servicio;
     private EstadoServicio estadoServicio;
+    private String placa;
 
    // private  String Estado;
     // Claves foráneas
@@ -22,6 +23,7 @@ public class Servicio {
     private int id_vehiculo;
    //) private String id_empleado;
    private String cedula_empleado;
+   private String nombre_empleado;
 
 
     // 2. Constructor Vacío (Requerido para  como Firebase )
@@ -31,7 +33,7 @@ public class Servicio {
     // 3. Constructor Completo
     public Servicio(String id_servicio, int nro_servicio,String tipo_lavado, String fecha, String hora_inicio, String hora_fin,
                     double costo, String indicaciones, String descripcion_servicio, EstadoServicio estado_servicio,int estado,
-                    int id_vehiculo, String cedula_empleado) {
+                   /* int id_vehiculo,,*/String placa, String cedula_empleado,String nombre_empleado) {
         this.id_servicio = id_servicio;
         this.nro_servicio=nro_servicio;
         this.tipo_lavado = tipo_lavado;
@@ -43,9 +45,11 @@ public class Servicio {
         this.descripcion_servicio = descripcion_servicio;
        // this.estado_servicio = estado_servicio;
         this.estadoServicio=estado_servicio;
-        this.id_vehiculo = id_vehiculo;
+        this.placa=placa;
+       // this.id_vehiculo = id_vehiculo;
         //this.id_empleado = id_empleado;
         this.cedula_empleado=cedula_empleado;
+        this.nombre_empleado= nombre_empleado;
     }
 
 
@@ -166,5 +170,21 @@ public class Servicio {
 
     public void setNro_servicio(int nro_servicio) {
         this.nro_servicio = nro_servicio;
+    }
+
+    public String getPlaca() {
+        return placa;
+    }
+
+    public void setPlaca(String placa) {
+        this.placa = placa;
+    }
+
+    public String getNombre_empleado() {
+        return nombre_empleado;
+    }
+
+    public void setNombre_empleado(String nombre_empleado) {
+        this.nombre_empleado = nombre_empleado;
     }
 }

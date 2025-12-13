@@ -54,9 +54,10 @@ public class ServicioRepository {
         servicio.setIndicaciones(dto.getIndicaciones());
         servicio.setEstadoServicio(dto.getEstadoServicio());
         servicio.setEstado(dto.getEstado()); // eliminación lógica
-        servicio.setId_vehiculo(dto.getIdVehiculo());
+        servicio.setPlaca(dto.getPlaca());
         servicio.setCedula_empleado(dto.getCedula_empleado());
-       // servicio.setId_empleado(dto.getIdEmpleado());
+        servicio.setNombre_empleado(dto.getNombreEmpleado());
+
 
         // Guardar en Firebase
         dbRef.child(id).setValue(servicio)

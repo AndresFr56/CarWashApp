@@ -12,31 +12,40 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.grupo5.carwashapp.R;
 import com.grupo5.carwashapp.models.dtos.servicio.ServicioCreateDTO;
 import com.grupo5.carwashapp.models.enums.EstadoServicio;
 import com.grupo5.carwashapp.models.enums.TipoLavado;
 import com.grupo5.carwashapp.repository.ServicioRepository;
+import com.grupo5.carwashapp.repository.UsuarioRepository;
+import com.grupo5.carwashapp.models.Usuario;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class RegistrarServicio extends AppCompatActivity {
 
-    private TextInputEditText vehiculoserv, empleadoserv, precioserv, fechacalensrv, indicacionesserv;
+    private TextInputEditText vehiculoserv, precioserv, fechacalensrv, indicacionesserv;
     private EditText horaInicio, horaFin;
-    private Spinner spTipoLavado;
+    private Spinner spTipoLavado, spEmpleado;
     private Button btnCalendario, btnRegistrar;
     private TextView descripcionTxt;
 
     private ServicioRepository serviciorepo;
+    private UsuarioRepository usuarioRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +60,10 @@ public class RegistrarServicio extends AppCompatActivity {
         });
 
         serviciorepo = new ServicioRepository();
+        usuarioRepository = new UsuarioRepository();
 
         // Inicializar campos
         vehiculoserv = findViewById(R.id.reg_txt_vehiserv);
-        empleadoserv = findViewById(R.id.reg_text_cedulaempleserv);
         precioserv = findViewById(R.id.reg_txt_precioserv);
         fechacalensrv = findViewById(R.id.txt_fechacalensrv);
         indicacionesserv = findViewById(R.id.reg_text_indicaserv);
@@ -68,14 +77,60 @@ public class RegistrarServicio extends AppCompatActivity {
         horaFin.setOnClickListener(v -> mostrarTimePicker(horaFin));
 
         spTipoLavado = findViewById(R.id.rg_sp_tipo_lavado);
+        spEmpleado = findViewById(R.id.sp_empleado_serv); // Spinner para empleados
         btnCalendario = findViewById(R.id.btn_calen);
         btnRegistrar = findViewById(R.id.reg_btn_registrarserv);
         descripcionTxt = findViewById(R.id.textview_descripcion);
 
         cargarSpinnerTipoLavado();
+        cargarEmpleadosEnSpinner(); // Cargar empleados en el spinner
         configurarAutoPrecioDescripcion();
         configurarCalendario();
         configurarBotonRegistrar();
+    }
+
+    // MÉTODO PARA CARGAR EMPLEADOS EN EL SPINNER
+    private void cargarEmpleadosEnSpinner() {
+        usuarioRepository.obtenerUsuariosPorRol("Empleado", new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Usuario> listaEmpleados = new ArrayList<>();
+
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    Usuario empleado = data.getValue(Usuario.class);
+                    if (empleado != null) {
+                        empleado.setUid(data.getKey()); // Asignar ID de Firebase
+                        listaEmpleados.add(empleado);
+                    }
+                }
+
+                if (listaEmpleados.isEmpty()) {
+                    Toast.makeText(RegistrarServicio.this,
+                            "No hay empleados registrados", Toast.LENGTH_SHORT).show();
+                }
+
+                cargarAdapterEmpleados(listaEmpleados);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(RegistrarServicio.this,
+                        "Error al cargar empleados: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // MÉTODO PARA CONFIGURAR EL ADAPTER DEL SPINNER
+    private void cargarAdapterEmpleados(List<Usuario> listaEmpleados) {
+        if (spEmpleado != null) {
+            ArrayAdapter<Usuario> adapterEmpleados = new ArrayAdapter<>(
+                    this,
+                    android.R.layout.simple_spinner_item,
+                    listaEmpleados
+            );
+            adapterEmpleados.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spEmpleado.setAdapter(adapterEmpleados);
+        }
     }
 
     private void cargarSpinnerTipoLavado() {
@@ -141,57 +196,45 @@ public class RegistrarServicio extends AppCompatActivity {
 
     private void configurarBotonRegistrar() {
         btnRegistrar.setOnClickListener(v -> {
-
+            // Validaciones básicas
             if (vehiculoserv.getText().toString().isEmpty() ||
-                    empleadoserv.getText().toString().isEmpty() ||
                     precioserv.getText().toString().isEmpty() ||
                     fechacalensrv.getText().toString().isEmpty() ||
                     horaInicio.getText().toString().isEmpty() ||
-                    horaFin.getText().toString().isEmpty()) {
+                    horaFin.getText().toString().isEmpty() ||
+                    spEmpleado.getSelectedItem() == null) { // Validar que se seleccionó empleado
 
                 Toast.makeText(this, "Complete todos los campos", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            String cedulaEmpleado = empleadoserv.getText().toString().trim();
+            // Obtener empleado seleccionado del spinner
+            Usuario empleadoSeleccionado = (Usuario) spEmpleado.getSelectedItem();
 
-            validarCedulaEmpleado(cedulaEmpleado, new OnCheckExist() {
+            // Ya no necesitamos validar la cédula porque el spinner ya contiene empleados válidos
+            // Generar el número de servicio directamente
+            serviciorepo.generarNroServicio(new ServicioRepository.OnNroGenerado() {
                 @Override
-                public void onExists() {
-
-                    // GENERAR EL NÚMERO AQUÍ
-                    serviciorepo.generarNroServicio(new ServicioRepository.OnNroGenerado() {
-                        @Override
-                        public void onSuccess(int nro) {
-                            crearServicioFinal(nro);
-                        }
-
-                        @Override
-                        public void onError(String err) {
-                            Toast.makeText(RegistrarServicio.this, err, Toast.LENGTH_LONG).show();
-                        }
-                    });
+                public void onSuccess(int nro) {
+                    crearServicioFinal(nro, empleadoSeleccionado);
                 }
 
                 @Override
-                public void onNotExists() {
-                    Toast.makeText(RegistrarServicio.this, "La cédula del empleado NO existe", Toast.LENGTH_LONG).show();
-                }
-
-                @Override
-                public void onError(String error) {
-                    Toast.makeText(RegistrarServicio.this, error, Toast.LENGTH_LONG).show();
+                public void onError(String err) {
+                    Toast.makeText(RegistrarServicio.this, err, Toast.LENGTH_LONG).show();
                 }
             });
-
         });
     }
 
-    private void crearServicioFinal(int nro_servicio) {
-
+    // MODIFICADO: Usar directamente el empleado del spinner
+    private void crearServicioFinal(int nro_servicio, Usuario empleadoSeleccionado) {
         TipoLavado tipoSeleccionado = (TipoLavado) spTipoLavado.getSelectedItem();
-        int idVehiculo = Integer.parseInt(vehiculoserv.getText().toString());
-        String cedulaEmpleado = empleadoserv.getText().toString().trim();
+        String placa = vehiculoserv.getText().toString().trim();
+
+        // Usar datos del empleado seleccionado directamente del spinner
+        String cedulaEmpleado = empleadoSeleccionado.getCedula();
+        String nombreEmpleado = empleadoSeleccionado.toString();
 
         ServicioCreateDTO dto = new ServicioCreateDTO(
                 tipoSeleccionado,
@@ -202,8 +245,9 @@ public class RegistrarServicio extends AppCompatActivity {
                 indicacionesserv.getText().toString(),
                 0,
                 EstadoServicio.PENDIENTE,
-                idVehiculo,
-                cedulaEmpleado
+                cedulaEmpleado,
+                nombreEmpleado,
+                placa
         );
 
         serviciorepo.crearServicio(dto, new ServicioRepository.OnServiceResult() {
@@ -218,32 +262,6 @@ public class RegistrarServicio extends AppCompatActivity {
                 Toast.makeText(RegistrarServicio.this, "ERROR: " + error, Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-    private void validarCedulaEmpleado(String cedula, OnCheckExist listener) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Usuarios");
-
-        ref.orderByChild("cedula").equalTo(cedula)
-                .get()
-                .addOnCompleteListener(task -> {
-
-                    if (!task.isSuccessful()) {
-                        listener.onError(task.getException().getMessage());
-                        return;
-                    }
-
-                    if (task.getResult().exists()) {
-                        listener.onExists();
-                    } else {
-                        listener.onNotExists();
-                    }
-                });
-    }
-
-    public interface OnCheckExist {
-        void onExists();
-        void onNotExists();
-        void onError(String error);
     }
 
     private String fechaString(TextInputEditText txt) {

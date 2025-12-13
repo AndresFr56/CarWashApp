@@ -17,7 +17,10 @@ public class ServicioCreateDTO {
     private int estado;
     private int idVehiculo;
     private String idEmpleado;
+    private String nombreEmpleado;
     private String cedula_empleado;
+
+    private String placa;
 
     // NOTA: El campo 'costo' no va aquí porque debe calcularse automáticamente
     // basándose en el TipoLavado seleccionado lo mismo que con descripcionServicio
@@ -29,7 +32,7 @@ public class ServicioCreateDTO {
     // Constructor con parámetros
     public ServicioCreateDTO(TipoLavado tipoLavado ,int nro_servicio, String fecha, String horaInicio, String horaFin,
                              String indicaciones/*., String descripcionServicio*/,int estado, EstadoServicio estadoServicio,
-                             int idVehiculo, String cedula_empleado) {
+                             /*int idVehiculo,*/ String cedula_empleado,String nombreEmpleado,String placa) {
         this.tipoLavado = tipoLavado;
         this.nro_servicio=nro_servicio;
         this.fecha = fecha;
@@ -39,9 +42,11 @@ public class ServicioCreateDTO {
         this.estado =estado;
        // this.descripcionServicio = descripcionServicio;
         this.estadoServicio = estadoServicio;
-        this.idVehiculo = idVehiculo;
+       // this.idVehiculo = idVehiculo;
       //  this.idEmpleado = idEmpleado;
         this.cedula_empleado=cedula_empleado;
+        this.nombreEmpleado = nombreEmpleado;
+        this.placa=placa;
     }
 
     // Getters y Setters
@@ -140,4 +145,22 @@ public class ServicioCreateDTO {
     public void setNro_servicio(int nro_servicio) {
         this.nro_servicio = nro_servicio;
     }
+
+    public String getNombreEmpleado() {
+        return nombreEmpleado;
+    }
+
+    public void setNombreEmpleado(String nombreEmpleado) {
+        this.nombreEmpleado = nombreEmpleado;
+    }
+
+    public String getPlaca() {
+        return placa;
+    }
+
+    public void setPlaca(String placa) {
+        this.placa = placa;
+    }
+
+
 }
