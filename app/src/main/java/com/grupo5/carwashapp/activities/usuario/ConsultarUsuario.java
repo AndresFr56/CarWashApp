@@ -21,7 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.grupo5.carwashapp.R;
 import com.grupo5.carwashapp.models.dtos.usuario.UsuarioUpdateDto;
-import com.grupo5.carwashapp.models.enums.EstadoUsuarios;
+import com.grupo5.carwashapp.models.enums.Estados;
 import com.grupo5.carwashapp.models.enums.Roles;
 import com.grupo5.carwashapp.repository.UsuarioRepository;
 
@@ -68,10 +68,10 @@ public class ConsultarUsuario extends AppCompatActivity {
         // Llenamos los estados con los valores del enum
         spEstado = findViewById(R.id.consul_spn_estado);
 
-        ArrayAdapter<EstadoUsuarios> adapterEstados = new ArrayAdapter<>(
+        ArrayAdapter<Estados> adapterEstados = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
-                EstadoUsuarios.values()
+                Estados.values()
         );
 
         adapterEstados.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -191,7 +191,7 @@ public class ConsultarUsuario extends AppCompatActivity {
         usuarioActualizado.setCorreo(correoT.getText().toString());
         usuarioActualizado.setDireccion(direccionT.getText().toString());
         usuarioActualizado.setRol(Roles.values()[spRol.getSelectedItemPosition()]);
-        usuarioActualizado.setEstado(EstadoUsuarios.values()[spEstado.getSelectedItemPosition()]);
+        usuarioActualizado.setEstado(Estados.values()[spEstado.getSelectedItemPosition()]);
 
         if (!validarFormulario()) {
             return;

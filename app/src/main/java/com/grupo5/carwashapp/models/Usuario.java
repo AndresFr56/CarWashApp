@@ -1,7 +1,7 @@
 package com.grupo5.carwashapp.models;
 
 import com.google.firebase.database.Exclude;
-import com.grupo5.carwashapp.models.enums.EstadoUsuarios;
+import com.grupo5.carwashapp.models.enums.Estados;
 import com.grupo5.carwashapp.models.enums.Roles;
 
 public class Usuario {
@@ -14,13 +14,13 @@ public class Usuario {
     private String correo;
     private String direccion;
     private Roles rol;
-    private EstadoUsuarios estado;
+    private Estados estado;
 
     // Constructor vacio
     public Usuario(){}
 
     public Usuario(String cedula, String nombres, String apellidos, String telefono,
-                   String correo, String direccion, Roles rol, EstadoUsuarios estado) {
+                   String correo, String direccion, Roles rol, Estados estado) {
         this.cedula = cedula;
         this.nombres = nombres;
         this.apellidos = apellidos;
@@ -64,7 +64,7 @@ public class Usuario {
         return rol;
     }
 
-    public EstadoUsuarios getEstado() {
+    public Estados getEstado() {
         return estado;
     }
 
@@ -97,7 +97,7 @@ public class Usuario {
         this.rol = rol;
     }
 
-    public void setEstado(EstadoUsuarios estado) {
+    public void setEstado(Estados estado) {
         this.estado = estado;
     }
 

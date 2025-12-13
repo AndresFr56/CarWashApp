@@ -277,7 +277,7 @@ public class RegistrarFactura extends AppCompatActivity {
         });
     }
 
-    public void cancelar(View v) {
+    public void regresar(View v) {
         finish();
     }
 }

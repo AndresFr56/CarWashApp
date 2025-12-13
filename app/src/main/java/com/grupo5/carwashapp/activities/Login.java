@@ -21,7 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.grupo5.carwashapp.R;
 import com.grupo5.carwashapp.activities.usuario.RegistrarUsuario;
 import com.grupo5.carwashapp.models.Usuario;
-import com.grupo5.carwashapp.models.enums.EstadoUsuarios;
+import com.grupo5.carwashapp.models.enums.Estados;
 import com.grupo5.carwashapp.repository.UsuarioRepository;
 
 public class Login extends AppCompatActivity {
@@ -68,7 +68,7 @@ public class Login extends AppCompatActivity {
                             Usuario usuario = snapshot.getValue(Usuario.class);
 
                             if (usuario != null) {
-                                if (usuario.getEstado() == EstadoUsuarios.INACTIVO) {
+                                if (usuario.getEstado() == Estados.INACTIVO) {
                                     Toast.makeText(v.getContext(), "Su usuario está inactivo", Toast.LENGTH_LONG).show();
                                     FirebaseAuth.getInstance().signOut();
                                     return;
