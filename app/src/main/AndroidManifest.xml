@@ -18,13 +18,19 @@
             android:name=".activities.servicio.servicio_principal"
             android:exported="false" />
         <activity
+            android:name=".activities.catalogoServicios.ActualizarCatalogoServicios"
+            android:exported="false" />
+        <activity
+            android:name=".activities.catalogoServicios.ConsultarCatalogoServicios"
+            android:exported="false" />
+        <activity
+            android:name=".activities.catalogoServicios.RegistrarCatalogoServicios"
+            android:exported="false" />
+        <activity
             android:name=".activities.usuario.MenuUsuarios"
             android:exported="false" />
         <activity
             android:name=".activities.facturacion.MenuFacturacion"
-            android:exported="false" />
-        <activity
-            android:name=".menuPrincipalFactura"
             android:exported="false" />
         <activity
             android:name=".activities.facturacion.VisualizarFactura"
