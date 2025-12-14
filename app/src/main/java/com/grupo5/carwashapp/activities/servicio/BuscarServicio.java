@@ -19,6 +19,8 @@ import com.grupo5.carwashapp.models.Servicio;
 import com.grupo5.carwashapp.repository.ServicioRepository;
 
 import java.util.List;
+import java.util.ArrayList;
+
 
 public class BuscarServicio extends AppCompatActivity {
 
@@ -81,10 +83,25 @@ public class BuscarServicio extends AppCompatActivity {
 
                 if (servicios == null || servicios.isEmpty()) {
                     recycler.setAdapter(null);
+                    return;
+                }
+
+
+                List<Servicio> serviciosFiltrados = new ArrayList<>();
+
+                for (Servicio s : servicios) {
+                    if (s.getEstado() != 1) {    // mostrar estado 1
+                        serviciosFiltrados.add(s);
+                    }
+                }
+
+                if (serviciosFiltrados.isEmpty()) {
+                    recycler.setAdapter(null);
                 } else {
-                    cargarRecycler(servicios);
+                    cargarRecycler(serviciosFiltrados);
                 }
             }
+
 
             @Override
             public void onError(String error) {

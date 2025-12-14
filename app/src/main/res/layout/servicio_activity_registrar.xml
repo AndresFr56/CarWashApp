@@ -31,17 +31,37 @@
                 android:paddingTop="25sp"
                 android:paddingBottom="25sp">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="350sp"
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="5sp">
+                    app:cardBackgroundColor="@color/blue">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/reg_txt_vehiserv"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Placa del Vehiculo" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:paddingHorizontal="10sp"
+                        android:paddingVertical="10sp">
+
+                        <TextView
+                            android:id="@+id/textView17"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Placa de Vehiculo" />
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <Spinner
+                                android:id="@+id/sp_plvehiculo_serv"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp" />
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"

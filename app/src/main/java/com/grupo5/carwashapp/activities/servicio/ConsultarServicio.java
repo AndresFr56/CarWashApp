@@ -1,5 +1,6 @@
 package com.grupo5.carwashapp.activities.servicio;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -19,10 +20,14 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.grupo5.carwashapp.R;
 import com.grupo5.carwashapp.models.CatalogoServicio;
 import com.grupo5.carwashapp.models.Servicio;
 import com.grupo5.carwashapp.models.Usuario;
+import com.grupo5.carwashapp.models.Vehiculo;
 import com.grupo5.carwashapp.models.dtos.servicio.ServicioUpdateDTO;
 import com.grupo5.carwashapp.models.enums.EstadoServicio;
 import com.grupo5.carwashapp.models.enums.Estados;
@@ -37,10 +42,10 @@ import java.util.Calendar;
 import java.util.List;
 
 public class ConsultarServicio extends AppCompatActivity {
-    private TextInputEditText id_serv, vehiculoserv, empleadoserv, indicacionesserv;
-    private Spinner spEstadoServ, spCatalogoServicio; // Cambiado de spTipoLavado
+    private TextInputEditText   indicacionesserv;
+    private Spinner spEstadoServ, spCatalogoServicio;
     private EditText horaInicio, horaFin;
-    private Button btnConsultar, btnModificar, btnEliminar;
+    private Button  btnModificar, btnEliminar;
     private TextView descripcionTxt, fechacalensrv, precioserv;
 
     private ServicioRepository serviciorepo;
@@ -50,6 +55,11 @@ public class ConsultarServicio extends AppCompatActivity {
     private UsuarioRepository usuarioRepository;
     private List<Usuario> listaEmpleados;
     private String cedulaEmpleadoPendiente = null;
+    private String placaVehiculoPendiente = null;
+
+    private Spinner spVehiculoConServ;
+    private List<Vehiculo> listaVehiculos = new ArrayList<>();
+
 
 
     private List<CatalogoServicio> listaCatalogoServicios; // Lista para almacenar servicios
@@ -71,8 +81,8 @@ public class ConsultarServicio extends AppCompatActivity {
         usuarioRepository = new UsuarioRepository();
         listaEmpleados = new ArrayList<>();
 
-        id_serv = findViewById(R.id.txt_id_serv);
-        vehiculoserv = findViewById(R.id.consul_vehiculoserv);
+
+
 
         fechacalensrv = findViewById(R.id.con_fechaserv);
         precioserv = findViewById(R.id.cons_precioserv);
@@ -85,8 +95,10 @@ public class ConsultarServicio extends AppCompatActivity {
         spCatalogoServicio = findViewById(R.id.sp_tipolavado); // Mismo ID del layout
         spEstadoServ = findViewById(R.id.sp_estadoserv);
         spEmpleadoConServ = findViewById(R.id.sp_emrpleadocon_serv);
+        spVehiculoConServ = findViewById(R.id.sp_vehiculocon_serv);
 
-        btnConsultar = findViewById(R.id.btn_buscar_serv);
+
+
         btnModificar = findViewById(R.id.btn_serv_actualizar);
         btnEliminar = findViewById(R.id.btn_serv_eliminar);
 
@@ -94,6 +106,7 @@ public class ConsultarServicio extends AppCompatActivity {
         cargarCatalogoServicios(); // NUEVO: en lugar de cargarSpinnerTipoLavado()
         configurarTimePickers();
         cargarEmpleadosEnSpinner();
+        cargarVehiculosEnSpinner();
         Servicio servicioRecibido =
                 (Servicio) getIntent().getSerializableExtra("servicio");
 
@@ -101,65 +114,10 @@ public class ConsultarServicio extends AppCompatActivity {
             cargarEnPantalla(servicioRecibido);
 
 
-            btnConsultar.setEnabled(false);
         }
 
 
-        btnConsultar.setOnClickListener(v -> {
-            String textoBusqueda = id_serv.getText().toString().trim();
 
-            if (textoBusqueda.isEmpty()) {
-                Toast.makeText(this, "Ingrese ID o número de servicio", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (textoBusqueda.matches("\\d+")) {
-                int nro = Integer.parseInt(textoBusqueda);
-                serviciorepo.buscarPorNumero(nro, new ServicioRepository.OnBuscarServicio() {
-                    @Override
-                    public void onFound(Servicio s) {
-                        if (s.getEstado() == 1) {
-                            Toast.makeText(ConsultarServicio.this,
-                                    "Este servicio fue eliminado", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        cargarEnPantalla(s);
-                    }
-
-                    @Override
-                    public void onNotFound() {
-                        Toast.makeText(ConsultarServicio.this, "No existe servicio con ese número", Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        Toast.makeText(ConsultarServicio.this, error, Toast.LENGTH_LONG).show();
-                    }
-                });
-            } else {
-                serviciorepo.buscarPorId(textoBusqueda, new ServicioRepository.OnBuscarServicio() {
-                    @Override
-                    public void onFound(Servicio s) {
-                        if (s.getEstado() == 1) {
-                            Toast.makeText(ConsultarServicio.this,
-                                    "Este servicio fue eliminado", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        cargarEnPantalla(s);
-                    }
-
-                    @Override
-                    public void onNotFound() {
-                        Toast.makeText(ConsultarServicio.this, "No existe servicio con ese ID", Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        Toast.makeText(ConsultarServicio.this, error, Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        });
 
         btnModificar.setOnClickListener(v -> {
             if (idRealServicio == null) {
@@ -180,8 +138,16 @@ public class ConsultarServicio extends AppCompatActivity {
 
             EstadoServicio estadoEnum = EstadoServicio.values()[spEstadoServ.getSelectedItemPosition()];
 
-            // Si el vehículo es solo texto (placa), no convertir a int
-            String placa = vehiculoserv.getText().toString();
+            Vehiculo vehiculoSeleccionado =
+                    (Vehiculo) spVehiculoConServ.getSelectedItem();
+
+            if (vehiculoSeleccionado == null) {
+                Toast.makeText(this, "Seleccione un vehículo", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String placa = vehiculoSeleccionado.getPlaca();
+
 
             // Crear DTO con CatalogoServicio
             ServicioUpdateDTO dto = new ServicioUpdateDTO(
@@ -201,6 +167,7 @@ public class ConsultarServicio extends AppCompatActivity {
                 @Override
                 public void onSuccess(String msg) {
                     Toast.makeText(ConsultarServicio.this, msg, Toast.LENGTH_LONG).show();
+                    volverAServicioMenu();
                 }
 
                 @Override
@@ -220,6 +187,7 @@ public class ConsultarServicio extends AppCompatActivity {
                 @Override
                 public void onSuccess(String msg) {
                     Toast.makeText(ConsultarServicio.this, msg, Toast.LENGTH_LONG).show();
+                    volverAServicioMenu();
                 }
 
                 @Override
@@ -228,6 +196,63 @@ public class ConsultarServicio extends AppCompatActivity {
                 }
             });
         });
+    }
+
+    private void volverAServicioMenu() {
+        Intent intent = new Intent(ConsultarServicio.this, servicio_menu.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+
+
+    private void cargarVehiculosEnSpinner() {
+        DatabaseReference ref = FirebaseDatabase.getInstance()
+                .getReference("Vehiculos");
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listaVehiculos.clear();
+
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    Vehiculo vehiculo = data.getValue(Vehiculo.class);
+                    if (vehiculo != null) {
+                        vehiculo.setUid(data.getKey());
+                        listaVehiculos.add(vehiculo);
+                    }
+                }
+
+                ArrayAdapter<Vehiculo> adapter = new ArrayAdapter<>(
+                        ConsultarServicio.this,
+                        android.R.layout.simple_spinner_item,
+                        listaVehiculos
+                );
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spVehiculoConServ.setAdapter(adapter);
+
+
+                seleccionarVehiculoPendiente();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(ConsultarServicio.this,
+                        "Error al cargar vehículos", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void seleccionarVehiculoPendiente() {
+        if (placaVehiculoPendiente == null || listaVehiculos.isEmpty()) return;
+
+        for (int i = 0; i < listaVehiculos.size(); i++) {
+            if (listaVehiculos.get(i).getPlaca()
+                    .equalsIgnoreCase(placaVehiculoPendiente)) {
+                spVehiculoConServ.setSelection(i);
+                break;
+            }
+        }
     }
 
 
@@ -400,7 +425,7 @@ public class ConsultarServicio extends AppCompatActivity {
 
 
         cedulaEmpleadoPendiente = s.getCedula_empleado();
-        vehiculoserv.setText(s.getPlaca());
+        placaVehiculoPendiente = s.getPlaca();
         fechacalensrv.setText(s.getFecha());
         horaInicio.setText(s.getHora_inicio());
         horaFin.setText(s.getHora_fin());

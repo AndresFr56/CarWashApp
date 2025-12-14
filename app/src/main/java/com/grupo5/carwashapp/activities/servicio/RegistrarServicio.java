@@ -29,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.grupo5.carwashapp.R;
 import com.grupo5.carwashapp.interfaces.RepositoryCallBack;
 import com.grupo5.carwashapp.models.CatalogoServicio;
+import com.grupo5.carwashapp.models.Vehiculo;
 import com.grupo5.carwashapp.models.dtos.servicio.ServicioCreateDTO;
 import com.grupo5.carwashapp.models.enums.EstadoServicio;
 import com.grupo5.carwashapp.models.enums.Estados;
@@ -44,16 +45,19 @@ import java.util.List;
 
 public class RegistrarServicio extends AppCompatActivity {
 
-    private TextInputEditText vehiculoserv, precioserv, fechacalensrv, indicacionesserv;
+    private TextInputEditText  precioserv, fechacalensrv, indicacionesserv;
     private EditText horaInicio, horaFin;
     private Spinner spCatalogoServicio, spEmpleado;
-    private Button btnCalendario, btnRegistrar;
+    private Button btnCalendario, btnRegistrar, btncancelar ,btnBorrar;
     private TextView descripcionTxt;
 
     private ServicioRepository serviciorepo;
     private UsuarioRepository usuarioRepository;
     private CatalogoServicioRepository catalogoServicioRepository;
     private List<CatalogoServicio> listaCatalogoServicios;
+    private Spinner spVehiculo;
+    private List<Vehiculo> listaVehiculos = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +77,7 @@ public class RegistrarServicio extends AppCompatActivity {
         listaCatalogoServicios = new ArrayList<>();
 
         // Inicializar campos
-        vehiculoserv = findViewById(R.id.reg_txt_vehiserv);
+
         precioserv = findViewById(R.id.reg_txt_precioserv);
         fechacalensrv = findViewById(R.id.txt_fechacalensrv);
         indicacionesserv = findViewById(R.id.reg_text_indicaserv);
@@ -88,17 +92,90 @@ public class RegistrarServicio extends AppCompatActivity {
 
         spCatalogoServicio = findViewById(R.id.rg_sp_tipo_lavado);
         spEmpleado = findViewById(R.id.sp_empleado_serv); // Spinner para empleados
+        spVehiculo = findViewById(R.id.sp_plvehiculo_serv);
+
         btnCalendario = findViewById(R.id.btn_calen);
         btnRegistrar = findViewById(R.id.reg_btn_registrarserv);
-        descripcionTxt = findViewById(R.id.textview_descripcion);
+        btncancelar = findViewById(R.id.reg_btn_cancelarserv);
+        btnBorrar = findViewById(R.id.reg_btn_borrarserv);
 
-        //cargarSpinnerTipoLavado();
+        descripcionTxt = findViewById(R.id.textview_descripcion);
+        btncancelar.setOnClickListener(v -> {
+            finish();
+        });
+        btnBorrar.setOnClickListener(v -> {
+
+
+            precioserv.setText("");
+            fechacalensrv.setText("");
+            indicacionesserv.setText("");
+            horaInicio.setText("");
+            horaFin.setText("");
+
+            // Resetear spinners
+            spCatalogoServicio.setSelection(0);
+            spEmpleado.setSelection(0);
+            spVehiculo.setSelection(0);
+
+            // Limpiar descripción
+            descripcionTxt.setText("");
+
+            Toast.makeText(this, "Campos limpiados", Toast.LENGTH_SHORT).show();
+        });
+
+
+
         cargarCatalogoServicios();
         cargarEmpleadosEnSpinner(); // Cargar empleados en el spinner
-       // configurarAutoPrecioDescripcion();
+
         configurarCalendario();
         configurarBotonRegistrar();
+        cargarVehiculosEnSpinner();
     }
+
+    private void cargarVehiculosEnSpinner() {
+        DatabaseReference ref = FirebaseDatabase.getInstance()
+                .getReference("Vehiculos");
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listaVehiculos.clear();
+
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    Vehiculo vehiculo = data.getValue(Vehiculo.class);
+                    if (vehiculo != null) {
+                        listaVehiculos.add(vehiculo);
+                    }
+                }
+
+                if (listaVehiculos.isEmpty()) {
+                    Toast.makeText(RegistrarServicio.this,
+                            "No hay vehículos registrados", Toast.LENGTH_SHORT).show();
+                }
+
+                cargarAdapterVehiculos(listaVehiculos);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(RegistrarServicio.this,
+                        "Error al cargar vehículos: " + error.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void cargarAdapterVehiculos(List<Vehiculo> vehiculos) {
+        ArrayAdapter<Vehiculo> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                vehiculos
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spVehiculo.setAdapter(adapter);
+    }
+
+
 
     // MÉTODO PARA CARGAR EMPLEADOS EN EL SPINNER
     private void cargarEmpleadosEnSpinner() {
@@ -144,15 +221,7 @@ public class RegistrarServicio extends AppCompatActivity {
         }
     }
 
-//    private void cargarSpinnerTipoLavado() {
-//        ArrayAdapter<TipoLavado> adapter = new ArrayAdapter<>(
-//                this,
-//                android.R.layout.simple_spinner_item,
-//                TipoLavado.values()
-//        );
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        spTipoLavado.setAdapter(adapter);
-//    }
+
 
     private void configurarCalendario() {
         btnCalendario.setOnClickListener(v -> {
@@ -279,16 +348,17 @@ public class RegistrarServicio extends AppCompatActivity {
     private void configurarBotonRegistrar() {
         btnRegistrar.setOnClickListener(v -> {
             // Validaciones básicas
-            if (vehiculoserv.getText().toString().isEmpty() ||
-                    precioserv.getText().toString().isEmpty() ||
+            if (precioserv.getText().toString().isEmpty() ||
                     fechacalensrv.getText().toString().isEmpty() ||
                     horaInicio.getText().toString().isEmpty() ||
                     horaFin.getText().toString().isEmpty() ||
-                    spEmpleado.getSelectedItem() == null) { // Validar que se seleccionó empleado
+                    spEmpleado.getSelectedItem() == null ||
+                    spVehiculo.getSelectedItem() == null) {
 
                 Toast.makeText(this, "Complete todos los campos", Toast.LENGTH_SHORT).show();
                 return;
             }
+
 
             // Obtener empleado seleccionado del spinner
             Usuario empleadoSeleccionado = (Usuario) spEmpleado.getSelectedItem();
@@ -309,26 +379,18 @@ public class RegistrarServicio extends AppCompatActivity {
         });
     }
 
-    // MODIFICADO: Usar directamente el empleado del spinner
-    // MODIFICAR el método crearServicioFinal
+
+    // MODIFICAR el método crearServicioFinal MODIFICADO: Usar directamente el empleado del spinner
     private void crearServicioFinal(int nro_servicio, Usuario empleadoSeleccionado) {
-        // Obtener servicio seleccionado del catálogo
-        int selectedPosition = spCatalogoServicio.getSelectedItemPosition();
-        if (selectedPosition < 0 || selectedPosition >= listaCatalogoServicios.size()) {
-            Toast.makeText(this, "Seleccione un servicio del catálogo", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
-        CatalogoServicio catalogoServicio = listaCatalogoServicios.get(selectedPosition);
-        String placa = vehiculoserv.getText().toString().trim();
+        CatalogoServicio catalogoServicio =
+                listaCatalogoServicios.get(spCatalogoServicio.getSelectedItemPosition());
 
-        // Usar datos del empleado seleccionado
-        String cedulaEmpleado = empleadoSeleccionado.getCedula();
-        String nombreEmpleado = empleadoSeleccionado.toString();
+        Vehiculo vehiculoSeleccionado = (Vehiculo) spVehiculo.getSelectedItem();
+        String placa = vehiculoSeleccionado.getPlaca();
 
-        // MODIFICADO: Crear DTO con CatalogoServicio
         ServicioCreateDTO dto = new ServicioCreateDTO(
-                catalogoServicio, // Enviar el objeto CatalogoServicio
+                catalogoServicio,
                 nro_servicio,
                 fechaString(fechacalensrv),
                 horaInicio.getText().toString(),
@@ -336,8 +398,8 @@ public class RegistrarServicio extends AppCompatActivity {
                 indicacionesserv.getText().toString(),
                 0,
                 EstadoServicio.PENDIENTE,
-                cedulaEmpleado,
-                nombreEmpleado,
+                empleadoSeleccionado.getCedula(),
+                empleadoSeleccionado.toString(),
                 placa
         );
 
@@ -350,10 +412,11 @@ public class RegistrarServicio extends AppCompatActivity {
 
             @Override
             public void onError(String error) {
-                Toast.makeText(RegistrarServicio.this, "ERROR: " + error, Toast.LENGTH_LONG).show();
+                Toast.makeText(RegistrarServicio.this, error, Toast.LENGTH_LONG).show();
             }
         });
     }
+
 
     private String fechaString(TextInputEditText txt) {
         return txt.getText() != null ? txt.getText().toString() : "";
