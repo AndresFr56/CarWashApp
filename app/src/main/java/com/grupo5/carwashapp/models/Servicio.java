@@ -7,7 +7,8 @@ public class Servicio {
     private String id_servicio;
     private int nro_servicio;
 
-    private String tipo_lavado;
+    private String id_catalogo_servicio;
+    private String nombre_servicio;
     private String fecha;
     private String hora_inicio;
     private String hora_fin;
@@ -31,12 +32,13 @@ public class Servicio {
     }
 
     // 3. Constructor Completo
-    public Servicio(String id_servicio, int nro_servicio,String tipo_lavado, String fecha, String hora_inicio, String hora_fin,
+    public Servicio(String id_servicio, int nro_servicio, String fecha, String hora_inicio, String hora_fin,
                     double costo, String indicaciones, String descripcion_servicio, EstadoServicio estado_servicio,int estado,
                    /* int id_vehiculo,,*/String placa, String cedula_empleado,String nombre_empleado) {
         this.id_servicio = id_servicio;
         this.nro_servicio=nro_servicio;
-        this.tipo_lavado = tipo_lavado;
+        this.id_catalogo_servicio = id_catalogo_servicio;
+        this.nombre_servicio =nombre_servicio;
         this.fecha = fecha;
         this.hora_inicio = hora_inicio;
         this.hora_fin = hora_fin;
@@ -62,15 +64,6 @@ public class Servicio {
         this.id_servicio = id_servicio;
     }
 
-
-
-    public String getTipo_lavado() {
-        return tipo_lavado;
-    }
-
-    public void setTipo_lavado(String tipo_lavado) {
-        this.tipo_lavado = tipo_lavado;
-    }
 
 
 
@@ -131,15 +124,6 @@ public class Servicio {
     }
 
 
-
-    /*public String getId_empleado() {
-        return id_empleado;
-    }
-
-    public void setId_empleado(String id_empleado) {
-        this.id_empleado = id_empleado;
-    }*/
-
     public int getEstado() {
         return estado;
     }
@@ -186,5 +170,21 @@ public class Servicio {
 
     public void setNombre_empleado(String nombre_empleado) {
         this.nombre_empleado = nombre_empleado;
+    }
+
+    public String getId_catalogo_servicio() {
+        return id_catalogo_servicio;
+    }
+
+    public void setId_catalogo_servicio(String id_catalogo_servicio) {
+        this.id_catalogo_servicio = id_catalogo_servicio;
+    }
+
+    public String getNombre_servicio() {
+        return nombre_servicio;
+    }
+
+    public void setNombre_servicio(String nombre_servicio) {
+        this.nombre_servicio = nombre_servicio;
     }
 }

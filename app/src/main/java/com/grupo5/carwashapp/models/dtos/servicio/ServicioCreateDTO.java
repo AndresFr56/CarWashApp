@@ -1,12 +1,13 @@
 package com.grupo5.carwashapp.models.dtos.servicio;
 
 
+import com.grupo5.carwashapp.models.CatalogoServicio;
 import com.grupo5.carwashapp.models.enums.EstadoServicio;
 import com.grupo5.carwashapp.models.enums.TipoLavado;
 
 public class ServicioCreateDTO {
 
-    private TipoLavado tipoLavado; // Usando el enum directamente
+    private CatalogoServicio catalogoServicio;
     private int nro_servicio;
     private String fecha;
     private String horaInicio;
@@ -30,10 +31,10 @@ public class ServicioCreateDTO {
     }
 
     // Constructor con parámetros
-    public ServicioCreateDTO(TipoLavado tipoLavado ,int nro_servicio, String fecha, String horaInicio, String horaFin,
+    public ServicioCreateDTO(CatalogoServicio catalogoServicio ,int nro_servicio, String fecha, String horaInicio, String horaFin,
                              String indicaciones/*., String descripcionServicio*/,int estado, EstadoServicio estadoServicio,
                              /*int idVehiculo,*/ String cedula_empleado,String nombreEmpleado,String placa) {
-        this.tipoLavado = tipoLavado;
+        this.catalogoServicio = catalogoServicio;
         this.nro_servicio=nro_servicio;
         this.fecha = fecha;
         this.horaInicio = horaInicio;
@@ -50,13 +51,7 @@ public class ServicioCreateDTO {
     }
 
     // Getters y Setters
-    public TipoLavado getTipoLavado() {
-        return tipoLavado;
-    }
 
-    public void setTipoLavado(TipoLavado tipoLavado) {
-        this.tipoLavado = tipoLavado;
-    }
 
     public String getFecha() {
         return fecha;
@@ -163,4 +158,11 @@ public class ServicioCreateDTO {
     }
 
 
+    public CatalogoServicio getCatalogoServicio() {
+        return catalogoServicio;
+    }
+
+    public void setCatalogoServicio(CatalogoServicio catalogoServicio) {
+        this.catalogoServicio = catalogoServicio;
+    }
 }

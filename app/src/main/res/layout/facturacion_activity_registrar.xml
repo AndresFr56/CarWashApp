@@ -9,7 +9,7 @@
     tools:context=".activities.facturacion.RegistrarFactura">
 
     <ImageButton
-        android:id="@+id/btnBack"
+        android:id="@+id/btnSalir_serv"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
@@ -28,16 +28,16 @@
         android:text="Registrar Factura"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/btnBack"
-        app:layout_constraintStart_toEndOf="@id/btnBack"
-        app:layout_constraintTop_toTopOf="@id/btnBack" />
+        app:layout_constraintBottom_toBottomOf="@id/btnSalir_serv"
+        app:layout_constraintStart_toEndOf="@id/btnSalir_serv"
+        app:layout_constraintTop_toTopOf="@id/btnSalir_serv" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnBack">
+        app:layout_constraintTop_toBottomOf="@id/btnSalir_serv">
 
         <LinearLayout
             android:layout_width="match_parent"

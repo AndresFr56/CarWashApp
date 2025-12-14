@@ -1,6 +1,7 @@
 package com.grupo5.carwashapp.models.dtos.servicio;
 
 import com.google.firebase.database.Exclude;
+import com.grupo5.carwashapp.models.CatalogoServicio;
 import com.grupo5.carwashapp.models.enums.EstadoServicio;
 import com.grupo5.carwashapp.models.enums.TipoLavado;
 
@@ -8,34 +9,44 @@ public class ServicioUpdateDTO {
     @Exclude
     private String id_servicio;
 
-    private TipoLavado tipoLavado; // Usando el enum directamente
+
+    private CatalogoServicio catalogoServicio; // Cambiado de TipoLavado
     private String fecha;
     private String horaInicio;
     private String horaFin;
     private String indicaciones;
-    //private String descripcionServicio;
-    private EstadoServicio estadoServicio  ;// es  "PENDIENTE", "EN_PROCESO", "COMPLETADO", "CANCELADO"
     private int estado;
-    private int idVehiculo;
+    private EstadoServicio estadoServicio;
+    private String placa; // Cambiado de idVehiculo (int) a placa (String)
     private String cedula_empleado;
 
-    public ServicioUpdateDTO(){
+    public ServicioUpdateDTO() {
     }
 
-    public ServicioUpdateDTO(String id_servicio,TipoLavado tipoLavado, String fecha, String horaInicio, String horaFin,
-                             String indicaciones/*., String descripcionServicio*/,int estado, EstadoServicio estadoServicio,
-                             int idVehiculo, String cedula_empleado){
-        this.id_servicio=id_servicio;
-        this.tipoLavado = tipoLavado;
+    // MODIFICADO: Cambiar TipoLavado por CatalogoServicio
+    public ServicioUpdateDTO(String id_servicio, CatalogoServicio catalogoServicio,
+                             String fecha, String horaInicio, String horaFin,
+                             String indicaciones, int estado, EstadoServicio estadoServicio,
+                             String placa, String cedula_empleado) {
+        this.id_servicio = id_servicio;
+        this.catalogoServicio = catalogoServicio;
         this.fecha = fecha;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
         this.indicaciones = indicaciones;
-        // this.descripcionServicio = descripcionServicio;
+        this.estado = estado;
         this.estadoServicio = estadoServicio;
-        this.estado =estado;
-        this.idVehiculo = idVehiculo;
-       this.cedula_empleado=cedula_empleado;
+        this.placa = placa;
+        this.cedula_empleado = cedula_empleado;
+    }
+
+    // Getters y Setters
+    public CatalogoServicio getCatalogoServicio() {
+        return catalogoServicio;
+    }
+
+    public void setCatalogoServicio(CatalogoServicio catalogoServicio) {
+        this.catalogoServicio = catalogoServicio;
     }
 
     public String getId_servicio() {
@@ -44,14 +55,6 @@ public class ServicioUpdateDTO {
 
     public void setId_servicio(String id_servicio) {
         this.id_servicio = id_servicio;
-    }
-
-    public TipoLavado getTipoLavado() {
-        return tipoLavado;
-    }
-
-    public void setTipoLavado(TipoLavado tipoLavado) {
-        this.tipoLavado = tipoLavado;
     }
 
     public String getFecha() {
@@ -86,14 +89,6 @@ public class ServicioUpdateDTO {
         this.indicaciones = indicaciones;
     }
 
-    public EstadoServicio getEstadoServicio() {
-        return estadoServicio;
-    }
-
-    public void setEstadoServicio(EstadoServicio estadoServicio) {
-        this.estadoServicio = estadoServicio;
-    }
-
     public int getEstado() {
         return estado;
     }
@@ -102,15 +97,21 @@ public class ServicioUpdateDTO {
         this.estado = estado;
     }
 
-    public int getIdVehiculo() {
-        return idVehiculo;
+    public EstadoServicio getEstadoServicio() {
+        return estadoServicio;
     }
 
-    public void setIdVehiculo(int idVehiculo) {
-        this.idVehiculo = idVehiculo;
+    public void setEstadoServicio(EstadoServicio estadoServicio) {
+        this.estadoServicio = estadoServicio;
     }
 
+    public String getPlaca() {
+        return placa;
+    }
 
+    public void setPlaca(String placa) {
+        this.placa = placa;
+    }
 
     public String getCedula_empleado() {
         return cedula_empleado;

@@ -26,24 +26,24 @@ public class ServicioRepository {
     // 1. Crear servicio
 
     public void crearServicio(ServicioCreateDTO dto, OnServiceResult listener) {
-
-        // Genera ID automático
         String id = dbRef.push().getKey();
         if (id == null) {
             listener.onError("Error generando ID de servicio");
             return;
         }
 
-        // Construimos el objeto final Servicio
         Servicio servicio = new Servicio();
         servicio.setId_servicio(id);
         servicio.setNro_servicio(dto.getNro_servicio());
 
-
-        // Tipo de lavado
-        servicio.setTipo_lavado(dto.getTipoLavado().name());
-        servicio.setCosto(dto.getTipoLavado().getCosto());
-        servicio.setDescripcion_servicio(dto.getTipoLavado().getDescripcion());
+        // MODIFICADO: Usar CatalogoServicio en lugar de TipoLavado
+        if (dto.getCatalogoServicio() != null) {
+            // Guardar referencia al servicio del catálogo
+            servicio.setId_catalogo_servicio(dto.getCatalogoServicio().getUid());
+            servicio.setNombre_servicio(dto.getCatalogoServicio().getNombre());
+            servicio.setDescripcion_servicio(dto.getCatalogoServicio().getDescripcion());
+            servicio.setCosto(dto.getCatalogoServicio().getPrecio());
+        }
 
         // Fecha y horas
         servicio.setFecha(dto.getFecha());
@@ -53,11 +53,10 @@ public class ServicioRepository {
         // Otros campos
         servicio.setIndicaciones(dto.getIndicaciones());
         servicio.setEstadoServicio(dto.getEstadoServicio());
-        servicio.setEstado(dto.getEstado()); // eliminación lógica
+        servicio.setEstado(dto.getEstado());
         servicio.setPlaca(dto.getPlaca());
         servicio.setCedula_empleado(dto.getCedula_empleado());
         servicio.setNombre_empleado(dto.getNombreEmpleado());
-
 
         // Guardar en Firebase
         dbRef.child(id).setValue(servicio)
@@ -67,23 +66,24 @@ public class ServicioRepository {
 
     // 2. Actualizar servicio
     public void actualizarServicio(ServicioUpdateDTO dto, OnServiceResult listener) {
-
         HashMap<String, Object> updates = new HashMap<>();
 
-        updates.put("tipo_lavado", dto.getTipoLavado().name());
-        updates.put("costo", dto.getTipoLavado().getCosto());
-        updates.put("descripcion_servicio", dto.getTipoLavado().getDescripcion());
+        // MODIFICADO: Para actualizar con CatalogoServicio
+        if (dto.getCatalogoServicio() != null) {
+            updates.put("id_catalogo_servicio", dto.getCatalogoServicio().getUid());
+            updates.put("nombre_servicio", dto.getCatalogoServicio().getNombre());
+            updates.put("descripcion_servicio", dto.getCatalogoServicio().getDescripcion());
+            updates.put("costo", dto.getCatalogoServicio().getPrecio());
+        }
 
         updates.put("fecha", dto.getFecha());
         updates.put("hora_inicio", dto.getHoraInicio());
         updates.put("hora_fin", dto.getHoraFin());
         updates.put("indicaciones", dto.getIndicaciones());
-
-        updates.put("estadoServicio", dto.getEstadoServicio());
+        updates.put("estadoServicio", dto.getEstadoServicio().name());
         updates.put("estado", dto.getEstado());
-        updates.put("id_vehiculo", dto.getIdVehiculo());
-        updates.put("cedula_empleado",dto.getCedula_empleado());
-        //updates.put("id_empleado", dto.getIdEmpleado());
+        updates.put("placa", dto.getPlaca());
+        updates.put("cedula_empleado", dto.getCedula_empleado());
 
         dbRef.child(dto.getId_servicio())
                 .updateChildren(updates)
