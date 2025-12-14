@@ -8,12 +8,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
+import com.grupo5.carwashapp.interfaces.ServicioCallBack;
 import com.grupo5.carwashapp.models.Servicio;
 import com.grupo5.carwashapp.models.dtos.servicio.ServicioCreateDTO;
 import com.grupo5.carwashapp.models.dtos.servicio.ServicioUpdateDTO;
 import com.grupo5.carwashapp.models.enums.TipoLavado;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ServicioRepository {
 
@@ -99,6 +103,34 @@ public class ServicioRepository {
                 .addOnSuccessListener(aVoid -> listener.onSuccess("Servicio eliminado lógicamente"))
                 .addOnFailureListener(e -> listener.onError(e.getMessage()));
     }
+    public void buscarServiciosPorPlaca(String placa, ServicioCallBack callback) {
+
+        dbRef.orderByChild("placa")
+                .equalTo(placa)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        List<Servicio> listaServicios = new ArrayList<>();
+
+                        for (DataSnapshot ds : snapshot.getChildren()) {
+                            Servicio servicio = ds.getValue(Servicio.class);
+                            if (servicio != null) {
+                                listaServicios.add(servicio);
+                            }
+                        }
+
+                        callback.onServiciosLoaded(listaServicios);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        callback.onError(error.getMessage());
+                    }
+                });
+    }
+
     public void buscarPorId(String id, OnBuscarServicio listener) {
         dbRef.child(id)
                 .get()

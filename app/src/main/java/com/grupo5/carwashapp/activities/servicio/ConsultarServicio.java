@@ -49,6 +49,8 @@ public class ConsultarServicio extends AppCompatActivity {
     private Spinner spEmpleadoConServ;
     private UsuarioRepository usuarioRepository;
     private List<Usuario> listaEmpleados;
+    private String cedulaEmpleadoPendiente = null;
+
 
     private List<CatalogoServicio> listaCatalogoServicios; // Lista para almacenar servicios
 
@@ -92,6 +94,16 @@ public class ConsultarServicio extends AppCompatActivity {
         cargarCatalogoServicios(); // NUEVO: en lugar de cargarSpinnerTipoLavado()
         configurarTimePickers();
         cargarEmpleadosEnSpinner();
+        Servicio servicioRecibido =
+                (Servicio) getIntent().getSerializableExtra("servicio");
+
+        if (servicioRecibido != null) {
+            cargarEnPantalla(servicioRecibido);
+
+
+            btnConsultar.setEnabled(false);
+        }
+
 
         btnConsultar.setOnClickListener(v -> {
             String textoBusqueda = id_serv.getText().toString().trim();
@@ -220,35 +232,52 @@ public class ConsultarServicio extends AppCompatActivity {
 
 
     private void cargarEmpleadosEnSpinner() {
-        usuarioRepository.obtenerUsuariosPorRol("EMPLEADO", new com.google.firebase.database.ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                listaEmpleados.clear();
+        usuarioRepository.obtenerUsuariosPorRol("EMPLEADO",
+                new com.google.firebase.database.ValueEventListener() {
 
-                for (DataSnapshot data : snapshot.getChildren()) {
-                    Usuario empleado = data.getValue(Usuario.class);
-                    if (empleado != null) {
-                        empleado.setUid(data.getKey());
-                        listaEmpleados.add(empleado);
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        listaEmpleados.clear();
+
+                        // 1️⃣ Llenar lista
+                        for (DataSnapshot data : snapshot.getChildren()) {
+                            Usuario empleado = data.getValue(Usuario.class);
+                            if (empleado != null) {
+                                empleado.setUid(data.getKey());
+                                listaEmpleados.add(empleado);
+                            }
+                        }
+
+                        // 2️⃣ Asignar adapter
+                        ArrayAdapter<Usuario> adapter = new ArrayAdapter<>(
+                                ConsultarServicio.this,
+                                android.R.layout.simple_spinner_item,
+                                listaEmpleados
+                        );
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spEmpleadoConServ.setAdapter(adapter);
+
+                        // 3️⃣ Seleccionar empleado asignado (AHORA SÍ)
+                        if (cedulaEmpleadoPendiente != null) {
+                            for (int i = 0; i < listaEmpleados.size(); i++) {
+                                if (listaEmpleados.get(i).getCedula()
+                                        .equals(cedulaEmpleadoPendiente)) {
+
+                                    spEmpleadoConServ.setSelection(i);
+                                    break;
+                                }
+                            }
+                        }
                     }
-                }
 
-                ArrayAdapter<Usuario> adapter = new ArrayAdapter<>(
-                        ConsultarServicio.this,
-                        android.R.layout.simple_spinner_item,
-                        listaEmpleados
-                );
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spEmpleadoConServ.setAdapter(adapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(ConsultarServicio.this,
-                        "Error al cargar empleados", Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(ConsultarServicio.this,
+                                "Error al cargar empleados", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
+
 
     // NUEVO: Método para cargar servicios del catálogo
     private void cargarCatalogoServicios() {
@@ -368,54 +397,46 @@ public class ConsultarServicio extends AppCompatActivity {
     }
 
     private void cargarEnPantalla(Servicio s) {
-        if (s.getCedula_empleado() != null) {
-            for (int i = 0; i < listaEmpleados.size(); i++) {
-                if (listaEmpleados.get(i).getCedula().equals(s.getCedula_empleado())) {
-                    spEmpleadoConServ.setSelection(i);
-                    break;
-                }
-            }
-        }
 
+
+        cedulaEmpleadoPendiente = s.getCedula_empleado();
         vehiculoserv.setText(s.getPlaca());
-
-        // Buscar y seleccionar el servicio en el catálogo
-        if (s.getId_catalogo_servicio() != null) {
-            for (int i = 0; i < listaCatalogoServicios.size(); i++) {
-                if (listaCatalogoServicios.get(i).getUid().equals(s.getId_catalogo_servicio())) {
-                    spCatalogoServicio.setSelection(i);
-                    break;
-                }
-            }
-        } else {
-            for (int i = 0; i < listaCatalogoServicios.size(); i++) {
-                if (listaCatalogoServicios.get(i).getNombre().equals(s.getNombre_servicio())) {
-                    spCatalogoServicio.setSelection(i);
-                    break;
-                }
-            }
-        }
-
-        // Actualizar descripción y precio
-        descripcionTxt.setText(s.getDescripcion_servicio());
-        precioserv.setText(String.valueOf(s.getCosto()));
-
+        fechacalensrv.setText(s.getFecha());
         horaInicio.setText(s.getHora_inicio());
         horaFin.setText(s.getHora_fin());
         indicacionesserv.setText(s.getIndicaciones());
-        fechacalensrv.setText(s.getFecha());
+        precioserv.setText(String.valueOf(s.getCosto()));
+        descripcionTxt.setText(s.getDescripcion_servicio());
 
-        // CORREGIDO: s.getEstadoServicio() ya retorna un EstadoServicio
+
         EstadoServicio estado = s.getEstadoServicio();
-
-        // Verificar que no sea null antes de usarlo
         if (estado != null) {
             spEstadoServ.setSelection(estado.ordinal());
         } else {
-            spEstadoServ.setSelection(0); // Por defecto PENDIENTE
+            spEstadoServ.setSelection(0); // PENDIENTE por defecto
+        }
+        if (!listaCatalogoServicios.isEmpty()) {
+            if (s.getId_catalogo_servicio() != null) {
+                for (int i = 0; i < listaCatalogoServicios.size(); i++) {
+                    if (listaCatalogoServicios.get(i).getUid()
+                            .equals(s.getId_catalogo_servicio())) {
+                        spCatalogoServicio.setSelection(i);
+                        break;
+                    }
+                }
+            } else {
+                for (int i = 0; i < listaCatalogoServicios.size(); i++) {
+                    if (listaCatalogoServicios.get(i).getNombre()
+                            .equals(s.getNombre_servicio())) {
+                        spCatalogoServicio.setSelection(i);
+                        break;
+                    }
+                }
+            }
         }
 
-        // Guarda el ID real para actualización y eliminación
+        
         idRealServicio = s.getId_servicio();
     }
+
 }

@@ -59,7 +59,7 @@ public class servicio_menu extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Iniciar la Activity para Consultar un Servicio
-                Intent i = new Intent(servicio_menu.this, ConsultarServicio.class);
+                Intent i = new Intent(servicio_menu.this, BuscarServicio.class);
                 startActivity(i);
             }
         });

@@ -2,7 +2,9 @@ package com.grupo5.carwashapp.models;
 
 import com.grupo5.carwashapp.models.enums.EstadoServicio;
 
-public class Servicio {
+import java.io.Serializable;
+
+public class Servicio implements Serializable {
 
     private String id_servicio;
     private int nro_servicio;
