@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.grupo5.carwashapp.R;
+import androidx.appcompat.app.AlertDialog;
 import com.grupo5.carwashapp.models.CatalogoServicio;
 import com.grupo5.carwashapp.models.Servicio;
 import com.grupo5.carwashapp.models.Usuario;
@@ -183,19 +184,33 @@ public class ConsultarServicio extends AppCompatActivity {
                 return;
             }
 
-            serviciorepo.eliminarLogico(idRealServicio, new ServicioRepository.OnServiceResult() {
-                @Override
-                public void onSuccess(String msg) {
-                    Toast.makeText(ConsultarServicio.this, msg, Toast.LENGTH_LONG).show();
-                    volverAServicioMenu();
-                }
+            new AlertDialog.Builder(ConsultarServicio.this)
+                    .setTitle("Confirmar eliminación")
+                    .setMessage("¿Está seguro de que desea eliminar este servicio?")
+                    .setCancelable(false)
+                    .setPositiveButton("Sí, eliminar", (dialog, which) -> {
 
-                @Override
-                public void onError(String error) {
-                    Toast.makeText(ConsultarServicio.this, error, Toast.LENGTH_LONG).show();
-                }
-            });
+                        // 👉 SOLO AQUÍ se elimina
+                        serviciorepo.eliminarLogico(idRealServicio, new ServicioRepository.OnServiceResult() {
+                            @Override
+                            public void onSuccess(String msg) {
+                                Toast.makeText(ConsultarServicio.this, msg, Toast.LENGTH_LONG).show();
+                                volverAServicioMenu();
+                            }
+
+                            @Override
+                            public void onError(String error) {
+                                Toast.makeText(ConsultarServicio.this, error, Toast.LENGTH_LONG).show();
+                            }
+                        });
+
+                    })
+                    .setNegativeButton("Cancelar", (dialog, which) -> {
+                        dialog.dismiss(); // Cierra el diálogo sin hacer nada
+                    })
+                    .show();
         });
+
     }
 
     private void volverAServicioMenu() {
