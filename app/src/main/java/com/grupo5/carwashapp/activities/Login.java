@@ -15,6 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -41,6 +42,24 @@ public class Login extends AppCompatActivity {
         repoUsuario = new UsuarioRepository();
         emailUsuario = findViewById(R.id.login_txt_correo);
         claveUsuario = findViewById(R.id.login_txt_clave);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        FirebaseUser usuarioActual = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (usuarioActual != null) {
+            SharedPreferences prefs = getSharedPreferences("CarWashSession", MODE_PRIVATE);
+            String rol = prefs.getString("rolUsuario", null);
+
+            if (rol != null) {
+                irAHome();
+            } else {
+                FirebaseAuth.getInstance().signOut();
+            }
+        }
     }
 
     public void validarInicioSesion(View v) {
@@ -97,9 +116,7 @@ public class Login extends AppCompatActivity {
                                 editor.putString("rolUsuario", usuario.getRol().toString());
                                 editor.apply();
 
-                                Intent ventanaPrincipal = new Intent(Login.this, Home.class);
-                                startActivity(ventanaPrincipal);
-                                finish();
+                                irAHome();
                             }
                         } else {
                             v.setEnabled(true);
@@ -125,6 +142,13 @@ public class Login extends AppCompatActivity {
                 claveUsuario.requestFocus();
             }
         });
+    }
+
+    private void irAHome() {
+        Intent intent = new Intent(Login.this, Home.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 
 
