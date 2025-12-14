@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -16,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.grupo5.carwashapp.R;
 import com.grupo5.carwashapp.adapters.FacturaAdapter;
-import com.grupo5.carwashapp.interfaces.FacturaCallBack;
+import com.grupo5.carwashapp.interfaces.RepositoryCallBack;
 import com.grupo5.carwashapp.models.Factura;
 import com.grupo5.carwashapp.repository.FacturacionRepository;
 
@@ -26,6 +28,19 @@ public class ConsultarFactura extends AppCompatActivity {
     private TextInputEditText cedulaBuscarT;
     private RecyclerView recycler;
     private FacturaAdapter adapter;
+
+    private final ActivityResultLauncher<Intent> launcherDetalle = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Factura facturaActualizada = (Factura) result.getData().getSerializableExtra("facturaRetorno");
+
+                    if (facturaActualizada != null && adapter != null) {
+                        adapter.actualizarItem(facturaActualizada);
+                    }
+                }
+            }
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,24 +66,23 @@ public class ConsultarFactura extends AppCompatActivity {
         }
 
         FacturacionRepository repo = new FacturacionRepository();
-        repo.buscarFacturasPorCedula(cedula, new FacturaCallBack() {
+        v.setEnabled(false);
+        repo.buscarFacturasPorCedula(cedula, new RepositoryCallBack<List<Factura>>() {
             @Override
-            public void onSuccess() {
-            }
-
-            @Override
-            public void onError(String error) {
-                Toast.makeText(ConsultarFactura.this, "Error: " + error, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFacturasLoaded(List<Factura> facturas) {
-                if (facturas.isEmpty()) {
-                    Toast.makeText(ConsultarFactura.this, "No se encontraron coincidencias", Toast.LENGTH_LONG).show();
+            public void onSuccess(List<Factura> listaFacturas) {
+                v.setEnabled(true);
+                if (listaFacturas.isEmpty()) {
+                    Toast.makeText(ConsultarFactura.this, "No se encontraron coincidencias", Toast.LENGTH_SHORT).show();
                     recycler.setAdapter(null);
                 } else {
-                    cargarRecycler(facturas);
+                    cargarRecycler(listaFacturas);
                 }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                v.setEnabled(true);
+                Toast.makeText(ConsultarFactura.this, "Error al cargar: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -77,8 +91,7 @@ public class ConsultarFactura extends AppCompatActivity {
         adapter = new FacturaAdapter(listaFacturas, factura -> {
             Intent intent = new Intent(ConsultarFactura.this, VisualizarFactura.class);
             intent.putExtra("datosFactura", factura);
-            startActivity(intent);
-            Toast.makeText(ConsultarFactura.this, "Abriendo factura...", Toast.LENGTH_SHORT).show();
+            launcherDetalle.launch(intent);
         });
         recycler.setAdapter(adapter);
     }

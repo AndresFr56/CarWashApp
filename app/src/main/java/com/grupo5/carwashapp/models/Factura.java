@@ -2,6 +2,7 @@ package com.grupo5.carwashapp.models;
 
 import com.google.firebase.database.Exclude;
 import com.grupo5.carwashapp.models.enums.EstadoFacturas;
+import com.grupo5.carwashapp.models.enums.FormaPago;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,6 +16,8 @@ public class Factura implements Serializable {
     private double iva;
     private double total;
     private EstadoFacturas estado;
+    private FormaPago formaPago;
+    private String observaciones;
 
     // Datos del cliente
     private String clienteId;
@@ -32,7 +35,7 @@ public class Factura implements Serializable {
         this.detalles = new ArrayList<>();
     }
 
-    public Factura(String fechaEmision, double subtotal,double iva, double total, EstadoFacturas estado,
+    public Factura(String fechaEmision, double subtotal, double iva, double total, EstadoFacturas estado,
                    String clienteId, String clienteNombre, String clienteCedula,
                    String vehiculoId, String vehiculoPlaca, List<DetalleFactura> detalles) {
         this.fechaEmision = fechaEmision;
@@ -101,6 +104,23 @@ public class Factura implements Serializable {
     public void setEstado(EstadoFacturas estado) {
         this.estado = estado;
     }
+
+    public FormaPago getFormaPago() {
+        return formaPago;
+    }
+
+    public void setFormaPago(FormaPago formaPago) {
+        this.formaPago = formaPago;
+    }
+
+    public String getObservaciones() {
+        return observaciones;
+    }
+
+    public void setObservaciones(String observaciones) {
+        this.observaciones = observaciones;
+    }
+
 
     // Getters del Cliente
     public String getClienteId() {

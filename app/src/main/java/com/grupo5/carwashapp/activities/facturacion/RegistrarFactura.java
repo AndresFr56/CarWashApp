@@ -1,5 +1,7 @@
 package com.grupo5.carwashapp.activities.facturacion;
 
+import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,19 +23,22 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.grupo5.carwashapp.R;
-import com.grupo5.carwashapp.interfaces.FacturaCallBack;
+import com.grupo5.carwashapp.interfaces.RepositoryCallBack;
+import com.grupo5.carwashapp.models.CatalogoServicio;
 import com.grupo5.carwashapp.models.DetalleFactura;
 import com.grupo5.carwashapp.models.Factura;
 import com.grupo5.carwashapp.models.Usuario;
 import com.grupo5.carwashapp.models.Vehiculo;
-import com.grupo5.carwashapp.models.enums.CatalogoServicios;
 import com.grupo5.carwashapp.models.enums.EstadoFacturas;
+import com.grupo5.carwashapp.models.enums.Roles;
+import com.grupo5.carwashapp.repository.CatalogoServicioRepository;
 import com.grupo5.carwashapp.repository.FacturacionRepository;
 import com.grupo5.carwashapp.repository.UsuarioRepository;
 import com.grupo5.carwashapp.repository.VehiculoRepository;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -47,6 +52,8 @@ public class RegistrarFactura extends AppCompatActivity {
     private double valorIva = 0;
     private double valorTotal = 0;
     private TextView txtFecha;
+    private final Calendar calendario = Calendar.getInstance();
+    private CatalogoServicioRepository repoServicios;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,22 +72,43 @@ public class RegistrarFactura extends AppCompatActivity {
         txtIva = findViewById(R.id.reg_fact_txt_iva);
         txtTotal = findViewById(R.id.reg_fact_txt_total);
         txtFecha = findViewById(R.id.reg_fact_txt_fecha);
-        txtFecha.setText(obtenerFechaActual());
+        repoServicios = new CatalogoServicioRepository();
+
+        actualizarInputFecha();
+        txtFecha.setOnClickListener(v -> mostrarSelectorFecha());
 
         cargarChecksServicios();
         cargarClientesEnSpinner();
     }
 
-    private String obtenerFechaActual() {
+    private void mostrarSelectorFecha() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                (view, year, month, dayOfMonth) -> {
+                    calendario.set(Calendar.YEAR, year);
+                    calendario.set(Calendar.MONTH, month);
+                    calendario.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                    actualizarInputFecha();
+                },
+                calendario.get(Calendar.YEAR),
+                calendario.get(Calendar.MONTH),
+                calendario.get(Calendar.DAY_OF_MONTH)
+        );
+        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+        datePickerDialog.show();
+    }
+
+    private void actualizarInputFecha() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        return sdf.format(new Date());
+        txtFecha.setText(sdf.format(calendario.getTime()));
     }
 
     private void cargarClientesEnSpinner() {
         UsuarioRepository repoUsuario = new UsuarioRepository();
-        repoUsuario.obtenerUsuariosPorRol("Cliente", new ValueEventListener() {
+        repoUsuario.obtenerUsuariosPorRol(Roles.CLIENTE.name(), new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (isFinishing() || isDestroyed()) return;
                 List<Usuario> listaClientes = new ArrayList<>();
 
                 for (DataSnapshot data : snapshot.getChildren()) {
@@ -160,19 +188,35 @@ public class RegistrarFactura extends AppCompatActivity {
     }
 
     private void cargarChecksServicios() {
-        contenedorServicios.removeAllViews();
+        repoServicios.obtenerServicios(new RepositoryCallBack<List<CatalogoServicio>>() {
+            @Override
+            public void onSuccess(List<CatalogoServicio> listaServicios) {
+                contenedorServicios.removeAllViews();
+                for (CatalogoServicio servicio : listaServicios) {
+                    CheckBox cb = new CheckBox(RegistrarFactura.this);
 
-        for (CatalogoServicios servicioEnum : CatalogoServicios.values()) {
-            CheckBox cb = new CheckBox(this);
-            cb.setText(servicioEnum.getEtiqueta());
-            cb.setTag(servicioEnum);
-            cb.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                calcularTotales();
-            });
-            contenedorServicios.addView(cb);
-        }
+                    String etiqueta = servicio.getNombre() + " ($" + servicio.getPrecio() + ")";
+                    cb.setText(etiqueta);
+
+                    cb.setTag(servicio);
+
+                    cb.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                        calcularTotales();
+                    });
+                    contenedorServicios.addView(cb);
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Toast.makeText(RegistrarFactura.this, "Error al cargar servicios: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
     }
 
+    @SuppressLint("DefaultLocale")
     private void calcularTotales() {
         double sumaTemporal = 0;
 
@@ -183,7 +227,7 @@ public class RegistrarFactura extends AppCompatActivity {
                 CheckBox cb = (CheckBox) v;
 
                 if (cb.isChecked()) {
-                    CatalogoServicios servicio = (CatalogoServicios) cb.getTag();
+                    CatalogoServicio servicio = (CatalogoServicio) cb.getTag();
                     sumaTemporal += servicio.getPrecio();
                 }
             }
@@ -215,15 +259,17 @@ public class RegistrarFactura extends AppCompatActivity {
             if (viewChild instanceof CheckBox) {
                 CheckBox cb = (CheckBox) viewChild;
                 if (cb.isChecked()) {
-                    CatalogoServicios enumServicio = (CatalogoServicios) cb.getTag();
+                    CatalogoServicio servicioObj = (CatalogoServicio) cb.getTag();
 
-                    DetalleFactura detalle = new DetalleFactura(
-                            enumServicio.name(),
-                            enumServicio.getNombre(),
-                            enumServicio.getPrecio(),
-                            1
-                    );
-                    detalles.add(detalle);
+                    if (servicioObj != null) {
+                        DetalleFactura detalle = new DetalleFactura(
+                                servicioObj.getUid(),
+                                servicioObj.getNombre(),
+                                servicioObj.getPrecio(),
+                                1
+                        );
+                        detalles.add(detalle);
+                    }
                 }
             }
         }
@@ -238,7 +284,7 @@ public class RegistrarFactura extends AppCompatActivity {
 
         Factura nuevaFactura = new Factura();
 
-        nuevaFactura.setFechaEmision(obtenerFechaActual());
+        nuevaFactura.setFechaEmision(txtFecha.getText().toString());
         nuevaFactura.setEstado(EstadoFacturas.PENDIENTE);
 
         nuevaFactura.setSubtotal(this.valorSubtotal);
@@ -258,23 +304,36 @@ public class RegistrarFactura extends AppCompatActivity {
         nuevaFactura.setDetalles(detalles);
 
         FacturacionRepository repoFactura = new FacturacionRepository();
+        v.setEnabled(false);
 
-        repoFactura.crearFactura(nuevaFactura, new FacturaCallBack() {
+        repoFactura.crearFactura(nuevaFactura, new RepositoryCallBack<String>() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(String resultado) {
                 Toast.makeText(v.getContext(), "Factura registrada correctamente", Toast.LENGTH_LONG).show();
                 finish();
             }
 
             @Override
-            public void onError(String error) {
-                Toast.makeText(v.getContext(), "No se pudo registrar la factura " + error, Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onFacturasLoaded(List<Factura> facturas) {
+            public void onFailure(Exception e) {
+                v.setEnabled(true);
+                Toast.makeText(RegistrarFactura.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void limpiarFormulario(View v) {
+        if (spClientes.getAdapter() != null && spClientes.getCount() > 0) {
+            spClientes.setSelection(0);
+        }
+        for (int i = 0; i < contenedorServicios.getChildCount(); i++) {
+            View viewChild = contenedorServicios.getChildAt(i);
+            if (viewChild instanceof CheckBox) {
+                ((CheckBox) viewChild).setChecked(false);
+            }
+        }
+        this.valorSubtotal = 0;
+        this.valorIva = 0;
+        this.valorTotal = 0;
     }
 
     public void regresar(View v) {

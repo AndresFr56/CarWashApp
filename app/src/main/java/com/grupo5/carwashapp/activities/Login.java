@@ -44,33 +44,48 @@ public class Login extends AppCompatActivity {
     }
 
     public void validarInicioSesion(View v) {
-        String email = emailUsuario.getText().toString();
-        String clave = claveUsuario.getText().toString();
+        v.setEnabled(false);
+
+        String email = emailUsuario.getText().toString().trim();
+        String clave = claveUsuario.getText().toString().trim();
+
         if (email.isEmpty()) {
             emailUsuario.setError("El correo es obligatorio");
             emailUsuario.requestFocus();
+            v.setEnabled(true);
             return;
         }
 
         if (clave.isEmpty()) {
             claveUsuario.setError("La contraseña es obligatoria");
             claveUsuario.requestFocus();
+            v.setEnabled(true);
             return;
         }
+
         repoUsuario.login(email, clave, task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(this, "Iniciando Sesión...", Toast.LENGTH_SHORT).show();
+
+                if (task.getResult().getUser() == null) {
+                    v.setEnabled(true);
+                    return;
+                }
+
                 String uid = task.getResult().getUser().getUid();
                 repoUsuario.obtenerUsuario(uid, new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
+                        if (isFinishing() || isDestroyed()) return;
+
                         if (snapshot.exists()) {
                             Usuario usuario = snapshot.getValue(Usuario.class);
 
                             if (usuario != null) {
                                 if (usuario.getEstado() == Estados.INACTIVO) {
-                                    Toast.makeText(v.getContext(), "Su usuario está inactivo", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(Login.this, "Su usuario está inactivo", Toast.LENGTH_LONG).show();
                                     FirebaseAuth.getInstance().signOut();
+                                    v.setEnabled(true);
                                     return;
                                 }
 
@@ -78,20 +93,36 @@ public class Login extends AppCompatActivity {
                                 SharedPreferences.Editor editor = shpUsuario.edit();
                                 editor.putString("uidUsuario", usuario.getUid());
                                 editor.putString("nombreUsuario", usuario.getNombres());
+                                editor.putString("apellidoUsuario", usuario.getApellidos());
+                                editor.putString("rolUsuario", usuario.getRol().toString());
                                 editor.apply();
 
-                                Intent ventanaPrincipal = new Intent(v.getContext(), Home.class);
+                                Intent ventanaPrincipal = new Intent(Login.this, Home.class);
                                 startActivity(ventanaPrincipal);
                                 finish();
                             }
+                        } else {
+                            v.setEnabled(true);
+                            Toast.makeText(Login.this, "Usuario no encontrado", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(v.getContext(), "Error de base de datos", Toast.LENGTH_SHORT).show();
+                        v.setEnabled(true);
+                        Toast.makeText(Login.this, "Error de base de datos", Toast.LENGTH_SHORT).show();
                     }
                 });
+
+            } else {
+                v.setEnabled(true);
+                String errorEx = "";
+                if (task.getException() != null) {
+                    errorEx = task.getException().getMessage();
+                }
+                Toast.makeText(Login.this, "Credenciales incorrectas", Toast.LENGTH_LONG).show();
+                claveUsuario.setText("");
+                claveUsuario.requestFocus();
             }
         });
     }
@@ -101,6 +132,4 @@ public class Login extends AppCompatActivity {
         Intent ventanaRegistrarUsuario = new Intent(v.getContext(), RegistrarUsuario.class);
         startActivity(ventanaRegistrarUsuario);
     }
-
-
 }

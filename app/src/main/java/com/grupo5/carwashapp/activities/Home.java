@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -32,7 +33,7 @@ import com.grupo5.carwashapp.activities.vehiculo.RegistrarVehiculo;
 import com.grupo5.carwashapp.repository.UsuarioRepository;
 
 
-public class Home extends AppCompatActivity {
+public class Home extends AppCompatActivity implements View.OnClickListener {
     CardView cardUsuarios, cardServicios, cardVehiculos, cardFacturacion;
 
     @Override
@@ -50,31 +51,59 @@ public class Home extends AppCompatActivity {
         cardVehiculos = findViewById(R.id.home_card_vehiculos);
         cardFacturacion = findViewById(R.id.home_card_facturacion);
 
-        cardUsuarios.setOnClickListener(v -> {
-            Intent i = new Intent(Home.this, MenuUsuarios.class);
-            startActivity(i);
-        });
-
-        cardServicios.setOnClickListener(v -> {
-            Intent i = new Intent(Home.this, RegistrarCatalogoServicios.class);
-            startActivity(i);
-        });
-
-        cardVehiculos.setOnClickListener(v -> {
-            Intent i = new Intent(Home.this, ConsultarCatalogoServicios.class);
-            startActivity(i);
-        });
-
-        cardFacturacion.setOnClickListener(v -> {
-            Intent i = new Intent(Home.this, MenuFacturacion.class);
-            startActivity(i);
-        });
-
-        TextView mensajeBienvenida = findViewById(R.id.home_lbl_bienvenida);
         SharedPreferences prefs = getSharedPreferences("CarWashSession", MODE_PRIVATE);
         String nombreUser = prefs.getString("nombreUsuario", "Usuario");
+        String apellidoUser = prefs.getString("apellidoUsuario", "Usuario");
+        String rolUser = prefs.getString("rolUsuario", "Usuario");
 
-        mensajeBienvenida.setText(String.format("Bienvenido, %s", nombreUser));
+        TextView mensajeBienvenida = findViewById(R.id.home_lbl_bienvenida);
+        mensajeBienvenida.setText(String.format("Bienvenido, %s %s!", nombreUser, apellidoUser));
+
+        accesoActivitiesPorRol(rolUser);
+        asignarEventosClic();
+    }
+
+    private void asignarEventosClic() {
+        cardUsuarios.setOnClickListener(this);
+        cardServicios.setOnClickListener(this);
+        cardVehiculos.setOnClickListener(this);
+        cardFacturacion.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent intent = null;
+        int id = v.getId();
+
+        if (id == R.id.home_card_usuarios) {
+            intent = new Intent(this, MenuUsuarios.class);
+        } else if (id == R.id.home_card_servicios) {
+            intent = new Intent(this, RegistrarCatalogoServicios.class);
+        } else if (id == R.id.home_card_vehiculos) {
+            intent = new Intent(this, ConsultarCatalogoServicios.class);
+        } else if (id == R.id.home_card_facturacion) {
+            intent = new Intent(this, MenuFacturacion.class);
+        }
+
+        if (intent != null) {
+            startActivity(intent);
+        }
+    }
+
+    private void accesoActivitiesPorRol(String rol) {
+        if (rol.equals("CLIENTE")) {
+            cardUsuarios.setVisibility(View.GONE);
+            cardServicios.setVisibility(View.GONE);
+            cardFacturacion.setVisibility(View.GONE);
+
+        } else if (rol.equals("EMPLEADO")) {
+            cardUsuarios.setVisibility(View.GONE);
+            cardFacturacion.setVisibility(View.VISIBLE);
+            cardServicios.setVisibility(View.VISIBLE);
+        } else if (rol.equals("ADMINISTRADOR")) {
+            cardUsuarios.setVisibility(View.VISIBLE);
+            cardFacturacion.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -93,34 +122,34 @@ public class Home extends AppCompatActivity {
             startActivity(ventanaRegistroUsuario);
         }
 
-        if (item.getItemId() == R.id.mp_usuario_consultar){
-            Intent ventanaConsultaUsuario = new Intent( this, ConsultarUsuario.class);
+        if (item.getItemId() == R.id.mp_usuario_consultar) {
+            Intent ventanaConsultaUsuario = new Intent(this, ConsultarUsuario.class);
             startActivity(ventanaConsultaUsuario);
         }
 
         //Submenu de Vehiculos
-        if (item.getItemId() == R.id.mp_vehiculo_nuevo){
-            Intent ventanaRegistroVehiculo = new Intent( this, RegistrarVehiculo.class);
+        if (item.getItemId() == R.id.mp_vehiculo_nuevo) {
+            Intent ventanaRegistroVehiculo = new Intent(this, RegistrarVehiculo.class);
             startActivity(ventanaRegistroVehiculo);
         }
 
-        if (item.getItemId() == R.id.mp_vehiculo_consultar){
-            Intent ventanaConsultaVehiculo = new Intent( this, ConsultarVehiculo.class);
+        if (item.getItemId() == R.id.mp_vehiculo_consultar) {
+            Intent ventanaConsultaVehiculo = new Intent(this, ConsultarVehiculo.class);
             startActivity(ventanaConsultaVehiculo);
         }
 
         //Submenu de Servicios
-        if (item.getItemId() == R.id.mp_servicio_nuevo){
-            Intent ventanaRegistroServicio = new Intent( this, RegistrarServicio.class);
+        if (item.getItemId() == R.id.mp_servicio_nuevo) {
+            Intent ventanaRegistroServicio = new Intent(this, RegistrarServicio.class);
             startActivity(ventanaRegistroServicio);
         }
 
-        if (item.getItemId() == R.id.mp_vehiculo_consultar){
-            Intent ventanaConsultaServicio = new Intent( this, ConsultarServicio.class);
+        if (item.getItemId() == R.id.mp_vehiculo_consultar) {
+            Intent ventanaConsultaServicio = new Intent(this, ConsultarServicio.class);
             startActivity(ventanaConsultaServicio);
         }
 
-        if (item.getItemId() == R.id.mp_acercaDe){
+        if (item.getItemId() == R.id.mp_acercaDe) {
             Dialog acercaDe = new Dialog(this);
             acercaDe.setContentView(R.layout.dialog_acerca_de);
             acercaDe.setCancelable(false);

@@ -7,12 +7,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.grupo5.carwashapp.interfaces.FacturaCallBack;
+import com.grupo5.carwashapp.interfaces.RepositoryCallBack;
 import com.grupo5.carwashapp.models.Factura;
 import com.grupo5.carwashapp.models.enums.EstadoFacturas;
+import com.grupo5.carwashapp.models.enums.FormaPago;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FacturacionRepository {
     private final DatabaseReference dbRef;
@@ -21,20 +24,21 @@ public class FacturacionRepository {
         dbRef = FirebaseDatabase.getInstance().getReference("Facturas");
     }
 
-    public void crearFactura(Factura factura, final FacturaCallBack callback) {
-        String key = dbRef.push().getKey();
-        factura.setUid(key);
+    public void crearFactura(Factura factura, final RepositoryCallBack<String> callback) {
+        DatabaseReference nuevaFacturaRef = dbRef.push();
+        String idNuevaFactura = nuevaFacturaRef.getKey();
+        factura.setUid(idNuevaFactura);
 
-        dbRef.child(key).setValue(factura)
+        dbRef.child(idNuevaFactura).setValue(factura)
                 .addOnSuccessListener(aVoid -> {
-                    callback.onSuccess();
+                    callback.onSuccess(idNuevaFactura);
                 })
                 .addOnFailureListener(e -> {
-                    callback.onError(e.getMessage());
+                    callback.onFailure(e);
                 });
     }
 
-    public void buscarFacturasPorCedula(String cedula, final FacturaCallBack callback) {
+    public void buscarFacturasPorCedula(String cedula, final RepositoryCallBack<List<Factura>> callback) {
         dbRef.orderByChild("clienteCedula").equalTo(cedula)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -48,19 +52,32 @@ public class FacturacionRepository {
                                 listaFacturas.add(fact);
                             }
                         }
-                        callback.onFacturasLoaded(listaFacturas);
+                        callback.onSuccess(listaFacturas);
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        callback.onError(error.getMessage());
+                        callback.onFailure(error.toException());
                     }
                 });
     }
 
-    public void anularFactura(String facturaId, final FacturaCallBack callback) {
+    public void actualizarEstadoPago(String uid, FormaPago formaPago, String observaciones, final RepositoryCallBack<Void> callback) {
+        Map<String, Object> actualizaciones = new HashMap<>();
+
+        actualizaciones.put("estado", EstadoFacturas.PAGADA);
+
+        actualizaciones.put("formaPago", formaPago.name());
+        actualizaciones.put("observaciones", observaciones);
+
+        dbRef.child(uid).updateChildren(actualizaciones)
+                .addOnSuccessListener(aVoid -> callback.onSuccess(null))
+                .addOnFailureListener(e -> callback.onFailure(e));
+    }
+
+    public void anularFactura(String facturaId, final RepositoryCallBack<Void> callback) {
         dbRef.child(facturaId).child("estado").setValue(EstadoFacturas.ANULADA)
-                .addOnSuccessListener(aVoid -> callback.onSuccess())
-                .addOnFailureListener(e -> callback.onError(e.getMessage()));
+                .addOnSuccessListener(aVoid -> callback.onSuccess(null))
+                .addOnFailureListener(e -> callback.onFailure(e));
     }
 }

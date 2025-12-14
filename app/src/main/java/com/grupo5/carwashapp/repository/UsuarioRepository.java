@@ -8,6 +8,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.grupo5.carwashapp.models.dtos.usuario.UsuarioCreateDto;
 import com.grupo5.carwashapp.models.dtos.usuario.UsuarioUpdateDto;
+import com.grupo5.carwashapp.models.enums.Estados;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -61,8 +62,8 @@ public class UsuarioRepository {
                 .addOnCompleteListener(listener);
     }
 
-    public void eliminarUsuarioFisico(String uid, OnCompleteListener<Void> listener) {
-        dbRefer.child(uid).removeValue()
+    public void eliminarUsuarioLogico(String uid, OnCompleteListener<Void> listener) {
+        dbRefer.child(uid).child("estado").setValue(Estados.INACTIVO)
                 .addOnCompleteListener(listener);
     }
 
