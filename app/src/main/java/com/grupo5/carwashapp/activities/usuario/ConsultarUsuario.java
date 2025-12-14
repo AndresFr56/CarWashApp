@@ -220,13 +220,13 @@ public class ConsultarUsuario extends AppCompatActivity {
     }
 
     private void realizarEliminacion(View v) {
-        repoUsuario.eliminarUsuarioFisico(usuarioActual.getUid(), task -> {
+        repoUsuario.eliminarUsuarioLogico(usuarioActual.getUid(), task -> {
             if (task.isSuccessful()) {
-                Toast.makeText(v.getContext(), "Usuario eliminado correctamente", Toast.LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(), "Usuario dado de baja correctamente", Toast.LENGTH_SHORT).show();
                 limpiarCampos(v);
                 usuarioActual = null;
             } else {
-                Toast.makeText(v.getContext(), "No se pudo realizar la eliminación", Toast.LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(), "No se pudo dar de baja el usuario", Toast.LENGTH_SHORT).show();
             }
         });
     }

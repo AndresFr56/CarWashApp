@@ -157,7 +157,7 @@ public class RegistrarUsuario extends AppCompatActivity {
         repoUsuario.registrarUsuario(usuario, contrasenia, task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(this, "Usuario registrado correctamente", Toast.LENGTH_SHORT).show();
-                limpiarFormulario(v);
+                finish();
             } else {
                 Toast.makeText(this, "No se pudo realizar el registro", Toast.LENGTH_LONG).show();
             }
@@ -174,7 +174,7 @@ public class RegistrarUsuario extends AppCompatActivity {
         contraseniaT.setText("");
     }
 
-    public void cancelarRegistro(View v) {
+    public void regresar(View v) {
         finish();
     }
 }

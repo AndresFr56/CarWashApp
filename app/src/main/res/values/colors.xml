@@ -11,6 +11,9 @@
     <color name="btnEliminar">#9C2007</color>
     <color name="green">#158E19</color>
     <color name="orange">#E4923A</color>
-    <color name="gray">#F2F9FA</color>
+    <color name="grayLight">#F2F9FA</color>
+    <color name="grayMedium">#767272</color>
     <color name="blue">#B8DCF2</color>
+    <color name="greenLight">#6FBBBD</color>
+
 </resources>

@@ -111,6 +111,7 @@ public class RegistrarCatalogoServicios extends AppCompatActivity {
             @Override
             public void onSuccess(String result) {
                 Toast.makeText(RegistrarCatalogoServicios.this, "Servicio registrado correctamente", Toast.LENGTH_SHORT).show();
+                finish();
             }
 
             @Override
