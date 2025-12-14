@@ -12,6 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CarWashApp">
         <activity
+            android:name=".activities.servicio.BuscarServicio"
+            android:exported="false" />
+        <activity
+            android:name=".activities.servicio.servicio_menu"
+            android:exported="false" />
+        <activity
+            android:name=".activities.servicio.servicio_principal"
+            android:exported="false" />
+        <activity
             android:name=".activities.catalogoServicios.ActualizarCatalogoServicios"
             android:exported="false" />
         <activity

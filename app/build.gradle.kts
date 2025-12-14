@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.material3.adaptive.navigation.suite)
     implementation(libs.fragment)
     implementation(libs.gridlayout)
+    implementation(libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
