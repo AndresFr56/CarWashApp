@@ -56,6 +56,18 @@ public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.FacturaV
         holder.itemView.setOnClickListener(v -> listener.onFacturaClick(factura));
     }
 
+    public void actualizarItem(Factura facturaModificada) {
+        if (listaFacturas == null) return;
+
+        for (int i = 0; i < listaFacturas.size(); i++) {
+            if (listaFacturas.get(i).getUid().equals(facturaModificada.getUid())) {
+                listaFacturas.set(i, facturaModificada);
+                notifyItemChanged(i);
+                break;
+            }
+        }
+    }
+
     @Override
     public int getItemCount() {
         return listaFacturas.size();

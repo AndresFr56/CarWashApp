@@ -9,11 +9,11 @@
     tools:context=".activities.facturacion.RegistrarFactura">
 
     <ImageButton
-        android:id="@+id/btnSalir_serv"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:id="@+id/btnBack"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="20dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Regresar"
         android:onClick="regresar"
@@ -25,7 +25,8 @@
         android:id="@+id/tvTitulo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Registrar Factura"
+        android:text="Nueva Venta"
+        android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/btnSalir_serv"
@@ -37,281 +38,277 @@
         android:layout_height="0dp"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnSalir_serv">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnBack">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="20dp"
-            android:paddingBottom="20dp"
-            android:paddingTop="0dp">>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="20dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/fact_lbl_fecha_emision"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Fecha de Emisión"
-                    android:textStyle="bold" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="5dp">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/reg_fact_txt_fecha"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:editable="false"
-                        android:enabled="false"
-                        android:hint="dd/mm/aaaa" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
+            android:paddingBottom="20dp">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"
-                app:cardBackgroundColor="@color/blue">
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="10dp">
+                    android:padding="20dp">
 
                     <TextView
-                        android:id="@+id/fact_lbl_cliente"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Cliente"
+                        android:layout_weight="1"
+                        android:text="Datos de Facturación"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_fecha"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+
+                        android:hint="Fecha de Emisión"
+                        app:endIconContentDescription="Seleccionar fecha"
+                        app:endIconDrawable="@drawable/ic_calendar"
+                        app:endIconMode="custom"
+                        app:endIconTint="@color/black">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/reg_fact_txt_fecha"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clickable="true"
+                            android:cursorVisible="false"
+                            android:focusable="false"
+                            android:inputType="none" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginBottom="4dp"
+                        android:text="Cliente"
+                        android:textSize="12sp" />
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="12dp"
+                        app:cardBackgroundColor="#F5F5F5"
+                        app:cardCornerRadius="4dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="#808080"
+                        app:strokeWidth="1dp">
 
                         <Spinner
                             android:id="@+id/fact_spn_cliente"
                             android:layout_width="match_parent"
-                            android:layout_height="48dp" />
-
+                            android:layout_height="match_parent"
+                            android:paddingStart="10dp" />
                     </androidx.cardview.widget.CardView>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/blue">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="10dp">
 
                     <TextView
-                        android:id="@+id/fact_lbl_vehiculo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginBottom="4dp"
                         android:text="Vehículo"
-                        android:textStyle="bold" />
+                        android:textSize="12sp" />
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="20dp"
+                        app:cardBackgroundColor="#F5F5F5"
+                        app:cardCornerRadius="4dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="#808080"
+                        app:strokeWidth="1dp">
 
                         <Spinner
                             android:id="@+id/fact_spn_vehiculo"
                             android:layout_width="match_parent"
-                            android:layout_height="48dp" />
-
+                            android:layout_height="match_parent"
+                            android:paddingStart="10dp" />
                     </androidx.cardview.widget.CardView>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                app:cardBackgroundColor="@color/blue">
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginBottom="15dp"
+                        android:background="#E0E0E0" />
 
-                <TextView
-                    android:id="@+id/fact_lbl_servicio"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:paddingTop="5dp"
-                    android:text="Servicios"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="Servicios"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
-                <ScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp">
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        app:cardBackgroundColor="#FAFAFA"
+                        app:cardCornerRadius="8dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="#E0E0E0"
+                        app:strokeWidth="1dp">
+
+                        <ScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <LinearLayout
+                                android:id="@+id/reg_fact_contenedorServicios"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="10dp" />
+                        </ScrollView>
+                    </androidx.cardview.widget.CardView>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginVertical="20dp"
+                        android:background="#E0E0E0" />
 
                     <LinearLayout
-                        android:id="@+id/reg_fact_contenedorServicios"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:paddingHorizontal="10dp"
-                        android:paddingVertical="10dp" />
-                </ScrollView>
+                        android:layout_marginBottom="20dp"
+                        android:gravity="end"
+                        android:orientation="vertical">
 
-            </androidx.cardview.widget.CardView>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:gravity="end|center_vertical"
+                            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:orientation="horizontal"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="10dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="10dp"
+                                android:text="Subtotal:" />
 
-                <TextView
-                    android:id="@+id/fact_lbl_subtotal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
-                    android:layout_weight="1"
-                    android:text="Subtotal" />
+                            <TextView
+                                android:id="@+id/reg_fact_txt_subtotal"
+                                android:layout_width="80dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="end"
+                                android:text="$0.00"
+                                android:textStyle="bold" />
+                        </LinearLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:gravity="end|center_vertical"
+                            android:orientation="horizontal">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/reg_fact_txt_subtotal"
-                        android:layout_width="90dp"
-                        android:layout_height="wrap_content"
-                        android:enabled="false"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:textSize="12dp" />
-                </com.google.android.material.textfield.TextInputLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="10dp"
+                                android:text="IVA (15%):" />
 
-            </LinearLayout>
+                            <TextView
+                                android:id="@+id/reg_fact_txt_iva"
+                                android:layout_width="80dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="end"
+                                android:text="$0.00"
+                                android:textStyle="bold" />
+                        </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="10dp">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="end|center_vertical"
+                            android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/fact_lbl_iva"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
-                    android:layout_weight="1"
-                    android:text="IVA 15%" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="10dp"
+                                android:text="TOTAL:"
+                                android:textColor="@color/black"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/reg_fact_txt_iva"
-                        android:layout_width="90dp"
-                        android:layout_height="wrap_content"
-                        android:enabled="false"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:textSize="12dp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="10sp"
-                android:paddingVertical="10dp">
-
-                <TextView
-                    android:id="@+id/fact_lbl_totalpagar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="40dp"
-                    android:text="Total" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/reg_fact_txt_total"
-                        android:layout_width="90dp"
-                        android:layout_height="wrap_content"
-                        android:enabled="false"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:textSize="12dp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:orientation="vertical">
-
-                <Button
-                    android:id="@+id/reg_fact_btn_registrar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/btnRegistrar"
-                    android:onClick="guardarFactura"
-                    android:text="Registrar" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                            <TextView
+                                android:id="@+id/reg_fact_txt_total"
+                                android:layout_width="80dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="end"
+                                android:text="$0.00"
+                                android:textColor="@color/black"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
 
                     <Button
-                        android:id="@+id/catalogo_act_btn_limpiar"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:layout_weight="1"
-                        android:text="Limpiar"
-                        android:textColor="@color/btnBorrar"
-                        app:strokeColor="@color/btnBorrar" />
+                        android:id="@+id/reg_fact_btn_registrar"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginBottom="10dp"
+                        android:backgroundTint="@color/btnRegistrar"
+                        android:onClick="guardarFactura"
+                        android:text="Emitir Factura"
+                        android:textStyle="bold"
+                        app:cornerRadius="8dp" />
 
-                    <Button
-                        android:id="@+id/catalogo_act_btn_cancelar"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="0dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_weight="1"
-                        android:onClick="regresar"
-                        android:text="Cancelar"
-                        android:textColor="@color/btnCancelar"
-                        app:strokeColor="@color/btnCancelar" />
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <Button
+                            android:id="@+id/reg_fact_btn_limpiar"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="@color/btnBorrar"
+                            android:onClick="limpiarFormulario"
+                            android:text="Limpiar" />
+
+                        <Button
+                            android:id="@+id/reg_fact_btn_cancelar"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="@color/btnCancelar"
+                            android:onClick="regresar"
+                            android:text="Cancelar"
+                            android:textColor="@color/white" />
+                    </LinearLayout>
+
                 </LinearLayout>
-            </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
     </ScrollView>

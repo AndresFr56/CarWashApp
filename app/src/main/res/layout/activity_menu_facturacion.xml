@@ -88,7 +88,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:src="@drawable/ic_registrar_factura"
-                    app:tint="@color/titleColor" />
+                    app:tint="@color/btnCalendar" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -100,6 +100,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Registrar Factura"
+                        android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -107,7 +108,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Emitir nueva factura"
-                        android:textColor="#757575"
+                        android:textColor="@color/grayMedium"
                         android:textSize="13sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -135,7 +136,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:src="@drawable/ic_gestion_factura"
-                    app:tint="@color/titleColor" />
+                    app:tint="@color/btnCalendar" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -147,14 +148,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Consultar Facturas"
+                        android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Buscar, Actualizar o Anular Facturas"
-                        android:textColor="#757575"
+                        android:text="Buscar, Pagar o Anular Facturas"
+                        android:textColor="@color/grayMedium"
                         android:textSize="13sp" />
                 </LinearLayout>
             </LinearLayout>
