@@ -220,7 +220,7 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <Button
-                        android:id="@+id/reg_btn_registrar"
+                        android:id="@+id/reg_btn_registrarserv"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:layout_marginBottom="10dp"

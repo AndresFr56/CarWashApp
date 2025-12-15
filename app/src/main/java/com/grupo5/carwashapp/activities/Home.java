@@ -20,11 +20,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.grupo5.carwashapp.R;
-import com.grupo5.carwashapp.activities.catalogoServicios.ConsultarCatalogoServicios;
-import com.grupo5.carwashapp.activities.catalogoServicios.RegistrarCatalogoServicios;
 import com.grupo5.carwashapp.activities.facturacion.MenuFacturacion;
+import com.grupo5.carwashapp.activities.facturacion.RegistrarFactura;
 import com.grupo5.carwashapp.activities.servicio.ConsultarServicio;
 import com.grupo5.carwashapp.activities.servicio.RegistrarServicio;
+import com.grupo5.carwashapp.activities.servicio.servicio_menu;
 import com.grupo5.carwashapp.activities.usuario.ConsultarUsuario;
 import com.grupo5.carwashapp.activities.usuario.MenuUsuarios;
 import com.grupo5.carwashapp.activities.usuario.RegistrarUsuario;
@@ -52,6 +52,33 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
         cardVehiculos = findViewById(R.id.home_card_vehiculos);
         cardFacturacion = findViewById(R.id.home_card_facturacion);
 
+        cardUsuarios.setOnClickListener(v -> {
+            Intent i = new Intent(Home.this, MenuUsuarios.class);
+            startActivity(i);
+        });
+
+        cardServicios.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // CAMBIO AQUÍ: La nueva actividad de destino
+                Intent i = new Intent(Home.this, servicio_menu.class);
+                startActivity(i);
+            }
+        });
+        cardVehiculos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Home.this, ConsultarUsuario.class);
+                startActivity(i);
+            }
+        });
+
+        cardFacturacion.setOnClickListener(v -> {
+            Intent i = new Intent(Home.this, MenuFacturacion.class);
+            startActivity(i);
+        });
+
+        TextView mensajeBienvenida = findViewById(R.id.home_lbl_bienvenida);
         SharedPreferences prefs = getSharedPreferences("CarWashSession", MODE_PRIVATE);
         String nombreUser = prefs.getString("nombreUsuario", "Usuario");
         String apellidoUser = prefs.getString("apellidoUsuario", "Usuario");
