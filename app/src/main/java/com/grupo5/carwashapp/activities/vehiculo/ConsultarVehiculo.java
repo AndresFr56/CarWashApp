@@ -24,12 +24,12 @@ import java.util.Iterator;
 
 public class ConsultarVehiculo extends AppCompatActivity {
 
-    private TextInputEditText txtPlacaBuscar, txtModelo, txtTipo, txtColor;
+    private TextInputEditText txtPlacaBuscar, txtMarca, txtModelo, txtTipo, txtColor;
     private String vehiculoIdActual = null;
     private VehiculoRepository repoVehiculo;
 
     private boolean modoEdicion = false;
-    private Vehiculo vehiculoCargado = null; // guardamos el objeto para mantener clienteId/placa
+    private Vehiculo vehiculoCargado = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,23 +45,24 @@ public class ConsultarVehiculo extends AppCompatActivity {
 
         repoVehiculo = new VehiculoRepository();
 
-        // IDs según tu XML
-        txtPlacaBuscar = findViewById(R.id.consul_txt_cedulaBuscar);
-        txtModelo = findViewById(R.id.consul_txt_cedula);
-        txtTipo = findViewById(R.id.consul_txt_nombre);
-        txtColor = findViewById(R.id.consul_txt_apellido);
+        txtPlacaBuscar = findViewById(R.id.consul_txt_placaBuscar);
+        txtMarca = findViewById(R.id.consul_txt_marca);
+        txtModelo = findViewById(R.id.consul_txt_modelo);
+        txtTipo = findViewById(R.id.consul_txt_tipo);
+        txtColor = findViewById(R.id.consul_txt_color);
 
-        // Bloquear campos al iniciar
         bloquearCampos(true);
     }
 
     private void bloquearCampos(boolean bloquear) {
-        // bloquear = true => no editable
+        txtMarca.setEnabled(!bloquear);
         txtModelo.setEnabled(!bloquear);
         txtTipo.setEnabled(!bloquear);
         txtColor.setEnabled(!bloquear);
 
-        // opcional: para que se vea como "solo lectura"
+        txtMarca.setFocusable(!bloquear);
+        txtMarca.setFocusableInTouchMode(!bloquear);
+
         txtModelo.setFocusable(!bloquear);
         txtModelo.setFocusableInTouchMode(!bloquear);
 
@@ -113,14 +114,14 @@ public class ConsultarVehiculo extends AppCompatActivity {
                 }
 
                 vehiculoIdActual = first.getKey();
-                vehiculo.setUid(vehiculoIdActual); // opcional
+                vehiculo.setUid(vehiculoIdActual);
                 vehiculoCargado = vehiculo;
 
                 txtModelo.setText(vehiculo.getModelo() != null ? vehiculo.getModelo() : "");
+                txtMarca.setText(vehiculo.getMarca() != null ? vehiculo.getMarca() : "");
                 txtTipo.setText(vehiculo.getTipo() != null ? vehiculo.getTipo() : "");
                 txtColor.setText(vehiculo.getColor() != null ? vehiculo.getColor() : "");
 
-                // Bloquear campos luego de cargar
                 bloquearCampos(true);
 
                 Toast.makeText(ConsultarVehiculo.this, "Vehículo encontrado", Toast.LENGTH_SHORT).show();
@@ -133,34 +134,48 @@ public class ConsultarVehiculo extends AppCompatActivity {
         });
     }
 
-    // Este método está atado a tu botón btn_act_actualizar (XML: android:onClick="actualizarUsuario")
     public void actualizarUsuario(View v) {
         if (vehiculoIdActual == null || vehiculoCargado == null) {
             Toast.makeText(this, "Primero consulte un vehículo", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Primer click: habilitar edición
         if (!modoEdicion) {
             bloquearCampos(false);
-            Toast.makeText(this, "Edición habilitada. Ahora puede modificar.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Edición habilitada. Modifique y pulse Actualizar de nuevo.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Segundo click: guardar cambios
+        String nuevaMarca = txtMarca.getText() != null ? txtMarca.getText().toString().trim() : "";
         String nuevoModelo = txtModelo.getText() != null ? txtModelo.getText().toString().trim() : "";
-        String nuevoTipo   = txtTipo.getText() != null ? txtTipo.getText().toString().trim() : "";
-        String nuevoColor  = txtColor.getText() != null ? txtColor.getText().toString().trim() : "";
+        String nuevoTipo = txtTipo.getText() != null ? txtTipo.getText().toString().trim() : "";
+        String nuevoColor = txtColor.getText() != null ? txtColor.getText().toString().trim() : "";
 
-        if (nuevoModelo.isEmpty()) { txtModelo.setError("Modelo obligatorio"); txtModelo.requestFocus(); return; }
-        if (nuevoTipo.isEmpty())   { txtTipo.setError("Tipo obligatorio"); txtTipo.requestFocus(); return; }
-        if (nuevoColor.isEmpty())  { txtColor.setError("Color obligatorio"); txtColor.requestFocus(); return; }
+        if (nuevaMarca.isEmpty()) {
+            txtMarca.setError("La marca es obligatoria");
+            txtMarca.requestFocus();
+            return;
+        }
+        if (nuevoModelo.isEmpty()) {
+            txtModelo.setError("El modelo es obligatorio");
+            txtModelo.requestFocus();
+            return;
+        }
+        if (nuevoTipo.isEmpty()) {
+            txtTipo.setError("El tipo es obligatorio");
+            txtTipo.requestFocus();
+            return;
+        }
+        if (nuevoColor.isEmpty()) {
+            txtColor.setError("El color es obligatorio");
+            txtColor.requestFocus();
+            return;
+        }
 
-        // Construimos objeto manteniendo clienteId y placa originales
         Vehiculo actualizado = new Vehiculo(
                 vehiculoCargado.getClienteId(),
                 vehiculoCargado.getPlaca(),
-                vehiculoCargado.getMarca(),   // si no muestras marca aquí, se conserva
+                nuevaMarca,
                 nuevoModelo,
                 nuevoColor,
                 nuevoTipo
@@ -171,16 +186,16 @@ public class ConsultarVehiculo extends AppCompatActivity {
             v.setEnabled(true);
             if (task.isSuccessful()) {
                 vehiculoCargado = actualizado;
+
                 bloquearCampos(true);
-                Toast.makeText(ConsultarVehiculo.this, "Vehículo actualizado", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ConsultarVehiculo.this, "Vehículo actualizado correctamente", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(ConsultarVehiculo.this, "Error al actualizar", Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    // Este método está atado a tu botón btn_act_eliminar (XML: android:onClick="eliminarUsuario")
-    public void eliminarUsuario(View v) {
+    public void eliminarVehiculo(View v) {
         if (vehiculoIdActual == null) {
             Toast.makeText(this, "Primero consulte un vehículo", Toast.LENGTH_SHORT).show();
             return;
@@ -213,9 +228,12 @@ public class ConsultarVehiculo extends AppCompatActivity {
     private void limpiarVista() {
         vehiculoIdActual = null;
         vehiculoCargado = null;
+
+        txtMarca.setText("");
         txtModelo.setText("");
         txtTipo.setText("");
         txtColor.setText("");
+
         bloquearCampos(true);
     }
 }

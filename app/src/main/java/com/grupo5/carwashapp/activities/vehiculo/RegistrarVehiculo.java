@@ -2,11 +2,10 @@ package com.grupo5.carwashapp.activities.vehiculo;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.Toast;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -34,7 +33,7 @@ public class RegistrarVehiculo extends AppCompatActivity {
         txtPlaca = findViewById(R.id.veh_txt_placa);
         txtMarca = findViewById(R.id.veh_txt_marca);
         txtModelo = findViewById(R.id.veh_txt_modelo);
-        txtTipo  = findViewById(R.id.veh_txt_tipo);
+        txtTipo = findViewById(R.id.veh_txt_tipo);
         txtColor = findViewById(R.id.veh_txt_color);
 
 
@@ -45,15 +44,15 @@ public class RegistrarVehiculo extends AppCompatActivity {
                 for (int i = start; i < end; i++) {
                     char c = source.charAt(i);
                     if (!(Character.isLetter(c) || c == ' ')) {
-                        return ""; // bloquea cualquier cosa que no sea letra o espacio
+                        return "";
                     }
                 }
-                return null; // acepta
+                return null;
             }
         };
 
-        txtMarca.setFilters(new InputFilter[]{ new InputFilter.LengthFilter(15), soloLetras });
-        txtTipo.setFilters(new InputFilter[]{ new InputFilter.LengthFilter(15), soloLetras });
+        txtMarca.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15), soloLetras});
+        txtTipo.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15), soloLetras});
         txtColor.setFilters(new InputFilter[]{
                 new InputFilter.LengthFilter(10),
                 soloLetras
@@ -70,7 +69,6 @@ public class RegistrarVehiculo extends AppCompatActivity {
 
         if (!validar(placa, marca, modelo, tipo, color)) return;
 
-        // ClienteId: mejor con FirebaseAuth; si por algo no, usamos SharedPreferences como plan B
         String clienteIdTemp;
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             clienteIdTemp = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -84,8 +82,7 @@ public class RegistrarVehiculo extends AppCompatActivity {
             return;
         }
 
-        final String clienteId = clienteIdTemp; // <- ahora sí, usable dentro del listener
-        // evitar placa duplicada
+        final String clienteId = clienteIdTemp;
         repoVehiculo.existePlaca(placa, new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -131,7 +128,6 @@ public class RegistrarVehiculo extends AppCompatActivity {
 
     private boolean validar(String placa, String marca, String modelo, String tipo, String color) {
 
-        // PLACA
         if (placa.isEmpty()) {
             txtPlaca.setError("La placa es obligatoria");
             txtPlaca.requestFocus();
@@ -142,7 +138,6 @@ public class RegistrarVehiculo extends AppCompatActivity {
             return false;
         }
 
-        // MARCA (solo letras)
         if (marca.isEmpty()) {
             txtMarca.setError("La marca es obligatoria");
             txtMarca.requestFocus();
@@ -157,7 +152,6 @@ public class RegistrarVehiculo extends AppCompatActivity {
             return false;
         }
 
-        // MODELO (letras y números)
         if (modelo.isEmpty()) {
             txtModelo.setError("El modelo es obligatorio");
             txtModelo.requestFocus();
@@ -172,7 +166,6 @@ public class RegistrarVehiculo extends AppCompatActivity {
             return false;
         }
 
-        // TIPO (solo letras)
         if (tipo.isEmpty()) {
             txtTipo.setError("El tipo es obligatorio");
             txtTipo.requestFocus();
@@ -187,7 +180,6 @@ public class RegistrarVehiculo extends AppCompatActivity {
             return false;
         }
 
-        // COLOR
         if (color.isEmpty()) {
             txtColor.setError("El color es obligatorio");
             txtColor.requestFocus();
@@ -205,6 +197,8 @@ public class RegistrarVehiculo extends AppCompatActivity {
     private String getText(TextInputEditText et) {
         return et.getText() == null ? "" : et.getText().toString();
     }
+
     public void regresar(View v) {
-        finish();}
+        finish();
+    }
 }

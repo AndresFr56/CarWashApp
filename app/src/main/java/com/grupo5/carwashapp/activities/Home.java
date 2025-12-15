@@ -20,6 +20,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.grupo5.carwashapp.R;
+import com.grupo5.carwashapp.activities.catalogoServicios.ConsultarCatalogoServicios;
+import com.grupo5.carwashapp.activities.catalogoServicios.RegistrarCatalogoServicios;
 import com.grupo5.carwashapp.activities.facturacion.MenuFacturacion;
 import com.grupo5.carwashapp.activities.facturacion.RegistrarFactura;
 import com.grupo5.carwashapp.activities.servicio.ConsultarServicio;
@@ -84,7 +86,6 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
         String apellidoUser = prefs.getString("apellidoUsuario", "Usuario");
         String rolUser = prefs.getString("rolUsuario", "Usuario");
 
-        TextView mensajeBienvenida = findViewById(R.id.home_lbl_bienvenida);
         mensajeBienvenida.setText(String.format("Bienvenido, %s %s!", nombreUser, apellidoUser));
 
         accesoActivitiesPorRol(rolUser);
@@ -106,7 +107,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
         if (id == R.id.home_card_usuarios) {
             intent = new Intent(this, MenuUsuarios.class);
         } else if (id == R.id.home_card_servicios) {
-            intent = new Intent(this, RegistrarCatalogoServicios.class);
+            intent = new Intent(this, servicio_menu.class);
         } else if (id == R.id.home_card_vehiculos) {
             intent = new Intent(this, MenuVehiculo.class);
         } else if (id == R.id.home_card_facturacion) {

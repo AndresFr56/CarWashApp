@@ -29,9 +29,9 @@
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/btnSalir_serv"
-        app:layout_constraintStart_toEndOf="@id/btnSalir_serv"
-        app:layout_constraintTop_toTopOf="@id/btnSalir_serv" />
+        app:layout_constraintBottom_toBottomOf="@id/btnBack"
+        app:layout_constraintStart_toEndOf="@id/btnBack"
+        app:layout_constraintTop_toTopOf="@id/btnBack" />
 
     <ScrollView
         android:layout_width="match_parent"

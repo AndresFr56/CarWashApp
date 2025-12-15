@@ -1,190 +1,195 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="@drawable/background_carwash"
     tools:context=".activities.vehiculo.RegistrarVehiculo">
 
-    <TextView
-        android:id="@+id/tvTitulo3"
-        android:layout_width="279dp"
-        android:layout_height="26dp"
-        android:layout_marginEnd="44dp"
-        android:text="Registrar Nuevo Vehiculo"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/btnBack2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btnBack"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.857" />
-
     <ImageButton
-        android:id="@+id/btnBack2"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_marginStart="32dp"
+        android:id="@+id/btnBack"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Regresar"
         android:onClick="regresar"
         android:src="@drawable/ic_arrow_back"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="410dp"
-        android:layout_height="596dp"
-        android:layout_marginBottom="4dp"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
+    <TextView
+        android:id="@+id/tvTitulo3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Registrar Nuevo Vehículo"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/btnBack"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btnBack"
+        app:layout_constraintTop_toTopOf="@+id/btnBack" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:paddingBottom="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnBack">
 
         <LinearLayout
-            android:layout_width="377dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="20sp">
+            android:paddingHorizontal="20dp"
+            android:paddingTop="20dp">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="350sp"
-                android:layout_height="wrap_content" />
-
-            <com.google.android.material.textfield.TextInputLayout
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/veh_txt_placa"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Placa del Vehiculo"
-                    android:inputType="text"
-                    android:paddingTop="20dp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/reg_lbl_apellidos"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/veh_txt_marca"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Marca"
-                    android:inputType="textPersonName"
-                    android:paddingTop="20dp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingTop="5sp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/veh_txt_modelo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Modelo"
-                    android:inputType="text|textWebEditText"
-                    android:paddingTop="20dp" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="15dp"
-                android:orientation="vertical">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="10dp" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/veh_txt_tipo"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Tipo (ej: camioneta, deportivo, etc) "
-                        android:inputType="text" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="10dp">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/veh_txt_color"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Color"
-                        android:inputType="text" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingTop="8dp">
-
-                <Button
-                    android:id="@+id/reg_btn_registrar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/btnRegistrar"
-                    android:onClick="guardarVehiculo"
-                    android:text="Registrar" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
-                    <Button
-                        android:id="@+id/reg_btn_borrar"
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/btnBorrar"
-                        android:onClick="limpiarFormularioVehiculo"
-                        android:paddingRight="30dp"
-                        android:text="Borrar" />
+                        android:layout_marginBottom="15dp"
+                        android:text="Datos del Vehículo"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
-                    <Button
-                        android:id="@+id/reg_btn_cancelar"
-                        android:layout_width="wrap_content"
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="#9EA8B1"
-                        android:onClick="cancelarRegistroVehiculo"
-                        android:paddingLeft="30dp"
-                        android:text="Cancelar" />
+                        android:layout_marginBottom="12dp"
+                        android:hint="Placa del Vehículo">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/veh_txt_placa"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textCapCharacters"
+                            android:maxLength="8"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:id="@+id/reg_lbl_marca"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:hint="Marca">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/veh_txt_marca"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textCapWords" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:hint="Modelo">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/veh_txt_modelo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textCapWords" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:hint="Tipo (ej: SUV, Sedan)">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/veh_txt_tipo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textCapWords" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:hint="Color">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/veh_txt_color"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <Button
+                android:id="@+id/reg_btn_registrar"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="@color/btnRegistrar"
+                android:onClick="guardarVehiculo"
+                android:text="Registrar Vehículo"
+                android:textStyle="bold"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/reg_btn_borrar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="6dp"
+                    android:backgroundTint="@color/btnBorrar"
+                    android:onClick="limpiarFormularioVehiculo"
+                    android:text="Limpiar" />
+
+                <Button
+                    android:id="@+id/reg_btn_cancelar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+                    android:backgroundTint="@color/btnCancelar"
+                    android:onClick="cancelarRegistroVehiculo"
+                    android:text="Cancelar" />
 
             </LinearLayout>
 
         </LinearLayout>
-
-    </LinearLayout>
-
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

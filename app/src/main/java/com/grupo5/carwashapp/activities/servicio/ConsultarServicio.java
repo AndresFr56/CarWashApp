@@ -479,4 +479,8 @@ public class ConsultarServicio extends AppCompatActivity {
         idRealServicio = s.getId_servicio();
     }
 
+    public void cancelar(View v) {
+        finish();
+    }
+
 }
