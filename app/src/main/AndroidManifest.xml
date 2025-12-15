@@ -36,6 +36,9 @@
             android:name=".activities.servicio.RegistrarServicio"
             android:exported="false" />
         <activity
+            android:name=".activities.vehiculo.MenuVehiculo"
+            android:exported="false" />
+        <activity
             android:name=".activities.vehiculo.ConsultarVehiculo"
             android:exported="false" />
         <activity

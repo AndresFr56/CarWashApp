@@ -29,6 +29,7 @@ import com.grupo5.carwashapp.activities.usuario.ConsultarUsuario;
 import com.grupo5.carwashapp.activities.usuario.MenuUsuarios;
 import com.grupo5.carwashapp.activities.usuario.RegistrarUsuario;
 import com.grupo5.carwashapp.activities.vehiculo.ConsultarVehiculo;
+import com.grupo5.carwashapp.activities.vehiculo.MenuVehiculo;
 import com.grupo5.carwashapp.activities.vehiculo.RegistrarVehiculo;
 import com.grupo5.carwashapp.repository.UsuarioRepository;
 
@@ -80,7 +81,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
         } else if (id == R.id.home_card_servicios) {
             intent = new Intent(this, RegistrarCatalogoServicios.class);
         } else if (id == R.id.home_card_vehiculos) {
-            intent = new Intent(this, ConsultarCatalogoServicios.class);
+            intent = new Intent(this, MenuVehiculo.class);
         } else if (id == R.id.home_card_facturacion) {
             intent = new Intent(this, MenuFacturacion.class);
         }
