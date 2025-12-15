@@ -34,75 +34,54 @@ public class BuscarServicio extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.servicio_activity_buscar);
-
         placaBuscarT = findViewById(R.id.consul_txt_placaserv_buscar);
         recycler = findViewById(R.id.consul_serv_recycle);
         recycler.setLayoutManager(new LinearLayoutManager(this));
-
         repo = new ServicioRepository();
-
-        //BÚSQUEDA AUTOMÁTICA
         placaBuscarT.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
                 String placa = s.toString().trim().toUpperCase();
 
-                // Limpiar resultados si está vacío
                 if (placa.isEmpty()) {
                     recycler.setAdapter(null);
                     return;
                 }
-
-                // Buscar SOLO cuando la placa esté completa (GPU-123)
                 if (placa.length() == 7) {
                     buscarServiciosAutomatico(placa);
                 } else {
                     recycler.setAdapter(null);
                 }
-            }
-
-            @Override
+            }@Override
             public void afterTextChanged(Editable s) {}
         });
     }
 
     // Método de búsqueda automática
     private void buscarServiciosAutomatico(String placa) {
-
         repo.buscarServiciosPorPlaca(placa, new ServicioCallBack() {
-
             @Override
             public void onSuccess() {}
-
             @Override
             public void onServiciosLoaded(List<Servicio> servicios) {
-
                 if (servicios == null || servicios.isEmpty()) {
                     recycler.setAdapter(null);
                     return;
                 }
-
-
                 List<Servicio> serviciosFiltrados = new ArrayList<>();
-
                 for (Servicio s : servicios) {
-                    if (s.getEstado() != 1) {    // mostrar estado 1
+                    if (s.getEstado() != 1) {
                         serviciosFiltrados.add(s);
                     }
                 }
-
                 if (serviciosFiltrados.isEmpty()) {
                     recycler.setAdapter(null);
                 } else {
                     cargarRecycler(serviciosFiltrados);
                 }
             }
-
-
             @Override
             public void onError(String error) {
                 Toast.makeText(BuscarServicio.this,

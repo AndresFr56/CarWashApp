@@ -75,82 +75,52 @@ public class ConsultarServicio extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
         serviciorepo = new ServicioRepository();
         catalogoServicioRepository = new CatalogoServicioRepository(); // Inicializar
         listaCatalogoServicios = new ArrayList<>();
         usuarioRepository = new UsuarioRepository();
         listaEmpleados = new ArrayList<>();
-
-
-
-
         fechacalensrv = findViewById(R.id.con_fechaserv);
         precioserv = findViewById(R.id.cons_precioserv);
         horaInicio = findViewById(R.id.cons_horainix_serv);
         horaFin = findViewById(R.id.con_horafin_serv);
         indicacionesserv = findViewById(R.id.txt_con_indicaciones);
         descripcionTxt = findViewById(R.id.cons_descripserv);
-
-        // CAMBIAR: spTipoLavado ahora es spCatalogoServicio
         spCatalogoServicio = findViewById(R.id.sp_tipolavado); // Mismo ID del layout
         spEstadoServ = findViewById(R.id.sp_estadoserv);
         spEmpleadoConServ = findViewById(R.id.sp_emrpleadocon_serv);
         spVehiculoConServ = findViewById(R.id.sp_vehiculocon_serv);
-
-
-
         btnModificar = findViewById(R.id.btn_serv_actualizar);
         btnEliminar = findViewById(R.id.btn_serv_eliminar);
-
         cargarSpinnerEstadoServicio();
         cargarCatalogoServicios(); // NUEVO: en lugar de cargarSpinnerTipoLavado()
         configurarTimePickers();
         cargarEmpleadosEnSpinner();
         cargarVehiculosEnSpinner();
-        Servicio servicioRecibido =
-                (Servicio) getIntent().getSerializableExtra("servicio");
-
+        Servicio servicioRecibido = (Servicio) getIntent().getSerializableExtra("servicio");
         if (servicioRecibido != null) {
             cargarEnPantalla(servicioRecibido);
-
-
         }
-
-
-
-
         btnModificar.setOnClickListener(v -> {
             if (idRealServicio == null) {
                 Toast.makeText(this, "Primero busque un servicio", Toast.LENGTH_SHORT).show();
                 return;
             }
-
-            // Obtener servicio seleccionado del catálogo
             int selectedPosition = spCatalogoServicio.getSelectedItemPosition();
             if (selectedPosition < 0 || selectedPosition >= listaCatalogoServicios.size()) {
                 Toast.makeText(this, "Seleccione un servicio del catálogo", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             CatalogoServicio catalogoServicio = listaCatalogoServicios.get(selectedPosition);
             Usuario empleadoSeleccionado = (Usuario) spEmpleadoConServ.getSelectedItem();
             String cedulaEmp = empleadoSeleccionado.getCedula();
-
             EstadoServicio estadoEnum = EstadoServicio.values()[spEstadoServ.getSelectedItemPosition()];
-
-            Vehiculo vehiculoSeleccionado =
-                    (Vehiculo) spVehiculoConServ.getSelectedItem();
-
+            Vehiculo vehiculoSeleccionado = (Vehiculo) spVehiculoConServ.getSelectedItem();
             if (vehiculoSeleccionado == null) {
                 Toast.makeText(this, "Seleccione un vehículo", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             String placa = vehiculoSeleccionado.getPlaca();
-
-
-            // Crear DTO con CatalogoServicio
             ServicioUpdateDTO dto = new ServicioUpdateDTO(
                     idRealServicio,
                     catalogoServicio, // Enviar CatalogoServicio en lugar de TipoLavado
@@ -163,14 +133,12 @@ public class ConsultarServicio extends AppCompatActivity {
                     placa,                    // placa del vehículo
                     cedulaEmp                 // cedulaEmpleado
             );
-
             serviciorepo.actualizarServicio(dto, new ServicioRepository.OnServiceResult() {
                 @Override
                 public void onSuccess(String msg) {
                     Toast.makeText(ConsultarServicio.this, msg, Toast.LENGTH_LONG).show();
                     volverAServicioMenu();
                 }
-
                 @Override
                 public void onError(String error) {
                     Toast.makeText(ConsultarServicio.this, error, Toast.LENGTH_LONG).show();
@@ -183,27 +151,20 @@ public class ConsultarServicio extends AppCompatActivity {
                 Toast.makeText(this, "Primero busque un servicio", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             new AlertDialog.Builder(ConsultarServicio.this)
                     .setTitle("Confirmar eliminación")
                     .setMessage("¿Está seguro de que desea eliminar este servicio?")
                     .setCancelable(false)
                     .setPositiveButton("Sí, eliminar", (dialog, which) -> {
-
-                        // 👉 SOLO AQUÍ se elimina
-                        serviciorepo.eliminarLogico(idRealServicio, new ServicioRepository.OnServiceResult() {
-                            @Override
+                        serviciorepo.eliminarLogico(idRealServicio, new ServicioRepository.OnServiceResult() {@Override
                             public void onSuccess(String msg) {
                                 Toast.makeText(ConsultarServicio.this, msg, Toast.LENGTH_LONG).show();
                                 volverAServicioMenu();
-                            }
-
-                            @Override
+                            }@Override
                             public void onError(String error) {
                                 Toast.makeText(ConsultarServicio.this, error, Toast.LENGTH_LONG).show();
                             }
                         });
-
                     })
                     .setNegativeButton("Cancelar", (dialog, which) -> {
                         dialog.dismiss(); // Cierra el diálogo sin hacer nada
@@ -223,14 +184,11 @@ public class ConsultarServicio extends AppCompatActivity {
 
 
     private void cargarVehiculosEnSpinner() {
-        DatabaseReference ref = FirebaseDatabase.getInstance()
-                .getReference("Vehiculos");
-
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Vehiculos");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 listaVehiculos.clear();
-
                 for (DataSnapshot data : snapshot.getChildren()) {
                     Vehiculo vehiculo = data.getValue(Vehiculo.class);
                     if (vehiculo != null) {
@@ -238,7 +196,6 @@ public class ConsultarServicio extends AppCompatActivity {
                         listaVehiculos.add(vehiculo);
                     }
                 }
-
                 ArrayAdapter<Vehiculo> adapter = new ArrayAdapter<>(
                         ConsultarServicio.this,
                         android.R.layout.simple_spinner_item,
@@ -246,12 +203,8 @@ public class ConsultarServicio extends AppCompatActivity {
                 );
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spVehiculoConServ.setAdapter(adapter);
-
-
                 seleccionarVehiculoPendiente();
-            }
-
-            @Override
+            }@Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(ConsultarServicio.this,
                         "Error al cargar vehículos", Toast.LENGTH_SHORT).show();
@@ -260,7 +213,6 @@ public class ConsultarServicio extends AppCompatActivity {
     }
     private void seleccionarVehiculoPendiente() {
         if (placaVehiculoPendiente == null || listaVehiculos.isEmpty()) return;
-
         for (int i = 0; i < listaVehiculos.size(); i++) {
             if (listaVehiculos.get(i).getPlaca()
                     .equalsIgnoreCase(placaVehiculoPendiente)) {
@@ -273,13 +225,9 @@ public class ConsultarServicio extends AppCompatActivity {
 
     private void cargarEmpleadosEnSpinner() {
         usuarioRepository.obtenerUsuariosPorRol("EMPLEADO",
-                new com.google.firebase.database.ValueEventListener() {
-
-                    @Override
+                new com.google.firebase.database.ValueEventListener() {@Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         listaEmpleados.clear();
-
-                        // 1️⃣ Llenar lista
                         for (DataSnapshot data : snapshot.getChildren()) {
                             Usuario empleado = data.getValue(Usuario.class);
                             if (empleado != null) {
@@ -287,8 +235,6 @@ public class ConsultarServicio extends AppCompatActivity {
                                 listaEmpleados.add(empleado);
                             }
                         }
-
-                        // 2️⃣ Asignar adapter
                         ArrayAdapter<Usuario> adapter = new ArrayAdapter<>(
                                 ConsultarServicio.this,
                                 android.R.layout.simple_spinner_item,
@@ -296,21 +242,16 @@ public class ConsultarServicio extends AppCompatActivity {
                         );
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spEmpleadoConServ.setAdapter(adapter);
-
-                        // 3️⃣ Seleccionar empleado asignado (AHORA SÍ)
                         if (cedulaEmpleadoPendiente != null) {
                             for (int i = 0; i < listaEmpleados.size(); i++) {
                                 if (listaEmpleados.get(i).getCedula()
                                         .equals(cedulaEmpleadoPendiente)) {
-
                                     spEmpleadoConServ.setSelection(i);
                                     break;
                                 }
                             }
                         }
-                    }
-
-                    @Override
+                    }@Override
                     public void onCancelled(@NonNull DatabaseError error) {
                         Toast.makeText(ConsultarServicio.this,
                                 "Error al cargar empleados", Toast.LENGTH_SHORT).show();
@@ -325,22 +266,17 @@ public class ConsultarServicio extends AppCompatActivity {
             @Override
             public void onSuccess(List<CatalogoServicio> servicios) {
                 listaCatalogoServicios.clear();
-
-                // Filtrar solo servicios ACTIVOS
                 for (CatalogoServicio servicio : servicios) {
                     if (servicio.getEstado() == Estados.ACTIVO) {
                         listaCatalogoServicios.add(servicio);
                     }
                 }
-
                 if (listaCatalogoServicios.isEmpty()) {
                     Toast.makeText(ConsultarServicio.this,
                             "No hay servicios disponibles en el catálogo", Toast.LENGTH_SHORT).show();
                 }
-
                 cargarAdapterCatalogoServicios();
             }
-
             @Override
             public void onFailure(Exception e) {
                 Toast.makeText(ConsultarServicio.this,
@@ -349,41 +285,31 @@ public class ConsultarServicio extends AppCompatActivity {
         });
     }
 
-    // NUEVO: Configurar adapter del catálogo
     private void cargarAdapterCatalogoServicios() {
         ArrayAdapter<CatalogoServicio> adapter = new ArrayAdapter<CatalogoServicio>(
                 this,
                 android.R.layout.simple_spinner_item,
                 listaCatalogoServicios
-        ) {
-            @Override
+        ) {@Override
             public View getView(int position, View convertView, android.view.ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
                 TextView textView = (TextView) view;
                 if (position >= 0 && position < listaCatalogoServicios.size()) {
                     textView.setText(listaCatalogoServicios.get(position).getNombre());
-                }
-                return view;
-            }
-
-            @Override
+                }return view;
+            }@Override
             public View getDropDownView(int position, View convertView, android.view.ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView textView = (TextView) view;
                 if (position >= 0 && position < listaCatalogoServicios.size()) {
                     CatalogoServicio servicio = listaCatalogoServicios.get(position);
                     textView.setText(servicio.getNombre() + " - $" + servicio.getPrecio());
-                }
-                return view;
+                }return view;
             }
         };
-
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spCatalogoServicio.setAdapter(adapter);
-
-        // Configurar listener para actualizar precio y descripción automáticamente
-        spCatalogoServicio.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
-            @Override
+        spCatalogoServicio.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {@Override
             public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
                 if (position >= 0 && position < listaCatalogoServicios.size()) {
                     CatalogoServicio servicioSeleccionado = listaCatalogoServicios.get(position);
@@ -435,10 +361,7 @@ public class ConsultarServicio extends AppCompatActivity {
         );
         timePicker.show();
     }
-
     private void cargarEnPantalla(Servicio s) {
-
-
         cedulaEmpleadoPendiente = s.getCedula_empleado();
         placaVehiculoPendiente = s.getPlaca();
         fechacalensrv.setText(s.getFecha());
@@ -447,13 +370,11 @@ public class ConsultarServicio extends AppCompatActivity {
         indicacionesserv.setText(s.getIndicaciones());
         precioserv.setText(String.valueOf(s.getCosto()));
         descripcionTxt.setText(s.getDescripcion_servicio());
-
-
         EstadoServicio estado = s.getEstadoServicio();
         if (estado != null) {
             spEstadoServ.setSelection(estado.ordinal());
         } else {
-            spEstadoServ.setSelection(0); // PENDIENTE por defecto
+            spEstadoServ.setSelection(0);
         }
         if (!listaCatalogoServicios.isEmpty()) {
             if (s.getId_catalogo_servicio() != null) {
@@ -464,8 +385,7 @@ public class ConsultarServicio extends AppCompatActivity {
                         break;
                     }
                 }
-            } else {
-                for (int i = 0; i < listaCatalogoServicios.size(); i++) {
+            } else {for (int i = 0; i < listaCatalogoServicios.size(); i++) {
                     if (listaCatalogoServicios.get(i).getNombre()
                             .equals(s.getNombre_servicio())) {
                         spCatalogoServicio.setSelection(i);
@@ -474,8 +394,6 @@ public class ConsultarServicio extends AppCompatActivity {
                 }
             }
         }
-
-        
         idRealServicio = s.getId_servicio();
     }
 
